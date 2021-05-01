@@ -40,7 +40,7 @@
 
 接下来，把被合并的情况要考虑进来。此时取被合并的情况，条件一定是：
 
-```sqlite
+```sql
 WHERE id!=parent_user_id AND parent_user_id  IS NOT NULL
 ```
 
