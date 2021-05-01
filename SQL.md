@@ -4,7 +4,7 @@
 
 案例背景：
 
-有的user是被删除deleted_at，有的user是被合并merge_at，并且合并时会有parent_user_id概诉你我当前的id被并到了哪个parent上。
+有的user是被删除deleted_at，有的user是被合并merge_at，并且合并时会有parent_user_id概诉你我当前的id被并到了哪个parent上。我们想通过该表求出每天的用户增长。
 
 ![image-20210501163315680](images/image-20210501163315680.png)
 
@@ -13,6 +13,8 @@
 
 
 首先，查看数据是什么样子的，发现即使合并也有的id和parent_user_id是一模一样的，这说明判断合并是，是两个同时并到一个上。其中：一个id得以保留，但也会留下相同时间的merged_at的记录；另一个的id消失，合并到对方身上。
+
+可以预料到的是：将来我们把合并的人去掉的时候，每两个merged_at实际对应只少掉了一个人。一种解决方法是：利用id!=parent_user_id来过滤出因merge少掉人的情况。
 
 ![image-20210501163839825](images/image-20210501163839825.png)
 
@@ -26,3 +28,8 @@
 
 
 
+接下来是一个<font color="red">易错点</font>，这时我们先简单地解决这个问题：我先把删除和合并的情况排除掉，只看他们不为空的情况。由于前面已经说过，可以通过id!=parent_user_id来过滤掉删除的情形，但观察下图的结果，数量比我们想的少很多。回到第一张图可以看见，由于parent_user_id大部分情况下是空，因此我们在用id!=parent_user_id排除合并的情形时，把正常的也不小心排除了。因此这里得加入OR parent_user_id is null来限制，最后别忘了加上括号。
+
+![image-20210501190643610](images/image-20210501190643610.png)
+
+![image-20210501191005048](images/image-20210501191005048.png)
