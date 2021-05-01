@@ -6,7 +6,11 @@
 
 有的user是被删除deleted_at，有的user是被合并merge_at，并且合并时会有parent_user_id概诉你我当前的id被并到了哪个parent上。
 
-![image-20210501163315680](C:\Users\Ben\AppData\Roaming\Typora\typora-user-images\image-20210501163315680.png)
+![image-20210501163315680](images/image-20210501163315680.png)
+
+
+
+
 
 首先，查看数据是什么样子的，发现即使合并也有的id和parent_user_id是一模一样的，这说明判断合并是，是两个同时并到一个上。其中：一个id得以保留，但也会留下相同时间的merged_at的记录；另一个的id消失，合并到对方身上。
 
@@ -18,4 +22,4 @@
 
 ![image-20210501164444371](C:\Users\Ben\AppData\Roaming\Typora\typora-user-images\image-20210501164444371.png)
 
-![image-20210501164610001](C:%5CUsers%5CBen%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20210501164610001.png)
+![image-20210501164610001](../../AppData/Roaming/Typora/typora-user-images/image-20210501164610001.png)
