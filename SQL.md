@@ -23,3 +23,7 @@
 ![image-20210501164444371](C:\Users\Ben\AppData\Roaming\Typora\typora-user-images\image-20210501164444371.png)
 
 ![image-20210501164610001](../../AppData/Roaming/Typora/typora-user-images/image-20210501164610001.png)
+
+
+
+![image-20210501172227541](SQL/images/image-20210501172227541.png)
