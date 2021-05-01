@@ -41,7 +41,19 @@
 接下来，把被合并的情况要考虑进来。此时取被合并的情况，条件一定是：
 
 ```sql
-WHERE id!parent_user_id AND parent_user_id  IS NOT NULL
+WHERE id!=parent_user_id AND parent_user_id  IS NOT NULL
 ```
 
-然后，把这一段代码和上述的一起join起来，此时仍然应该是Left join
+然后，把这一段代码和上述的一起join起来，此时仍然应该是Left join。得到如下的表格。但此时仍然有很多空值。此时只差最后一步了：把所有结果合并起来。
+
+![image-20210501193650727](images/image-20210501193650727.png)
+
+![image-20210501193746649](images/image-20210501193746649.png)
+
+**注意点**：如果直接相减，只要有空值，减出来的结果就是空，如下图所示。为了把空值变成0，需要用COALESCE函数（如果空就变成aaa），然后再相减。
+
+![image-20210501194700082](images/image-20210501194700082.png)
+
+**易错点**：新命名的变量可以on可以groupby，但不能where，也不能相减
+
+![image-20210501195303547](images/image-20210501195303547.png)
