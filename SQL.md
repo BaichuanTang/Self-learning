@@ -40,7 +40,7 @@
 
 接下来，把被合并的情况要考虑进来。此时取被合并的情况，条件一定是：
 
-```sql
+```sqlite
 WHERE id!=parent_user_id AND parent_user_id  IS NOT NULL
 ```
 
@@ -57,3 +57,30 @@ WHERE id!=parent_user_id AND parent_user_id  IS NOT NULL
 **易错点**：新命名的变量可以on可以groupby，但不能where，也不能相减
 
 ![image-20210501195303547](images/image-20210501195303547.png)
+
+源码:
+
+```sqlite
+SELECT new.dt, new.user_add AS u_add, 
+  COALESCE(del.user_del,0) AS u_del, 
+  COALESCE(mer.user_mer,0) AS u_mer,
+  new.user_add-COALESCE(del.user_del,0)-COALESCE(mer.user_mer,0) AS net_add
+FROM
+  (SELECT date(created_at) dt,count(*) user_add FROM dsv1069.users
+  group by dt
+  ) new
+  left JOIN 
+  (SELECT date(deleted_at) dt,count(*) user_del FROM dsv1069.users
+  WHERE deleted_at is not NULL 
+  group by dt
+  ) del 
+ON del.dt=new.dt
+LEFT JOIN 
+  (SELECT date(merged_at) dt,count(*) user_mer FROM dsv1069.users
+  WHERE id!=parent_user_id AND parent_user_id  IS NOT NULL
+  group by dt) mer
+ON mer.dt=new.dt
+```
+
+
+
