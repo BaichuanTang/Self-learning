@@ -60,7 +60,7 @@ WHERE id!=parent_user_id AND parent_user_id  IS NOT NULL
 
 源码:
 
-```sqlite
+```sql
 SELECT new.dt, new.user_add AS u_add, 
   COALESCE(del.user_del,0) AS u_del, 
   COALESCE(mer.user_mer,0) AS u_mer,
