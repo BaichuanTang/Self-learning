@@ -142,3 +142,15 @@ Liquid Tag来设置一个变量
 ![image-20210502140421065](images/image-20210502140421065.png)
 
 ![image-20210502141559615](images/image-20210502141559615.png)
+
+#### 窗口函数 Windowing Function
+
+rank, dense_rank, row_number
+
+partition by 相当于group by
+
+这样的好处是：你可以看见每一个组里的结果，平时我们用group by最终只会输出一条结果，但是用窗口函数可以保留所有的结果。窗口函数类似于pandas中的的transform函数，就像groupby类似于pandas中的groupby+agg函数。参考http://joyfulpandas.datawhale.club/Content/ch4.html#id5
+
+![image-20210502144416439](images/image-20210502144416439.png)
+
+![image-20210502145856874](images/image-20210502145856874.png)
