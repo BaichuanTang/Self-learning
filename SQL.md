@@ -5,6 +5,8 @@
     - [Week2知识点](#week2知识点)
     - [Week3知识点](#week3知识点)
 
+学习CTE
+
 ### Week1结课练习
 
 案例背景：
@@ -147,10 +149,50 @@ Liquid Tag来设置一个变量
 
 rank, dense_rank, row_number
 
-partition by 相当于group by
+ROW_NUMBER()是排序，当存在相同成绩的学生时，ROW_NUMBER()会依次进行排序，他们序号不相同，也就是1234一直排下去。相同时，就依照原本出现的顺序。
 
-这样的好处是：你可以看见每一个组里的结果，平时我们用group by最终只会输出一条结果，但是用窗口函数可以保留所有的结果。窗口函数类似于pandas中的的transform函数，就像groupby类似于pandas中的groupby+agg函数。参考http://joyfulpandas.datawhale.club/Content/ch4.html#id5
+RANK()，如果相同的话，会是1134
+
+DENSE_RANK()，如果相同的话，会是1123。dense密集的，也就是不跳跃
 
 ![image-20210502144416439](images/image-20210502144416439.png)
 
+partition by 相当于group by
+
+这样的好处是：你可以看见每一个组里的结果，平时我们用group by最终只会输出一条结果，但是用窗口函数可以保留所有的结果。窗口函数类似于pandas中的的transform函数（会保留所有行），就像groupby类似于pandas中的groupby+agg函数（只保留一行）。参考http://joyfulpandas.datawhale.club/Content/ch4.html#id5
+
+例如这边
+
+```sql
+dense_rank() over (partition by user_id order by event_time DESC) as rank
+```
+
+就可以写成
+
+```python
+view_item_events['rank']=view_item_events.groupby('user_id')['event_time'].rank(ascending=False,method='dense')
+```
+
+rank（）函数参数设置
+
+1.**method** : {‘average’, ‘min’, ‘max’, ‘first’, ‘dense’}, default ‘average’ 主要用来当排序时存在相同值参数设置；
+
 ![image-20210502145856874](images/image-20210502145856874.png)
+
+**实际应用**：我想要给浏览过某商品的人推动广告，但是不想给已经购买他们的人推送该广告。首先，肯定有recent_views表作为左表，通过ROW_NUMBER只取最远的一次浏览记录，然后users表和items表分别join上来。还要考虑到不能给已经删除的用户发邮件。接下来是重点：不想给已经购买他们的人推送该广告
+
+这是一个非常tricky的点，也就是怎么通过来只留下A中有的而B中没有的。
+
+首先的肯定是要把orders表join到总表上，但是对于右表orders来说，在where中设置orders.item_id也就是ON的右键为空，这就排除的右表。
+
+![image-20210502163130662](images/image-20210502163130662.png)
+
+最终效果如图：
+
+![image-20210502164101769](images/image-20210502164101769.png)
+
+![image-20210502164235691](images/image-20210502164235691.png)
+
+![image-20210502164333512](images/image-20210502164333512.png)
+
+ ![image-20210502164409026](images/image-20210502164409026.png)
