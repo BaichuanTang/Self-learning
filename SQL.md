@@ -1,6 +1,11 @@
 # SQL
 
-[toc]
+- [SQL](#sql)
+    + [Week1结课练习](#week1----)
+    + [Week2知识点](#week2---)
+    + [Week3知识点](#week3---)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
 ### Week1结课练习
 
