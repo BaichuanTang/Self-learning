@@ -1,6 +1,6 @@
 # SQL
 
-## 结课练习
+### Week1结课练习
 
 案例背景：
 
@@ -82,5 +82,34 @@ LEFT JOIN
 ON mer.dt=new.dt
 ```
 
+### Week2知识点
 
+通过CREATE TABLE xxx AS + SELECT 的方式创建表
 
+![image-20210501210641751](images/image-20210501210641751.png)
+
+通过describe 表aaa这个函数来看是否有空值
+
+![image-20210501210939393](images/image-20210501210939393.png)
+
+如果不存在则创建表，
+
+![image-20210501213706289](images/image-20210501213706289.png)
+
+用replace into （MySQL特定）（Hive: insert overwrite）代替insert into 可以将原有的数据全部替换。
+
+Liquid Tag来设置一个变量
+
+![image-20210502121420447](images/image-20210502121420447.png)
+
+![image-20210502121616488](images/image-20210502121616488.png)
+
+如果是想取哪天的表，因此就把当天的日期还有所有那天的记录，存在取下来的表中
+
+![image-20210502121946878](images/image-20210502121946878.png)
+
+![image-20210502122940361](images/image-20210502122940361.png)
+
+![image-20210502122523087](images/image-20210502122523087.png)
+
+### Week3知识点
