@@ -187,12 +187,96 @@ rank（）函数参数设置
 
 ![image-20210502163130662](images/image-20210502163130662.png)
 
-最终效果如图：
+最终效果：
 
-![image-20210502164101769](images/image-20210502164101769.png)
+分解步骤1：
 
-![image-20210502164235691](images/image-20210502164235691.png)
+![image-20210502192243958](images/image-20210502192243958.png)
 
-![image-20210502164333512](images/image-20210502164333512.png)
+分解步骤2：并上三个表
 
- ![image-20210502164409026](images/image-20210502164409026.png)
+![image-20210502192947271](images/image-20210502192947271.png)
+
+分解步骤3：再添加上不给删除的客户，不给购买过的客户（需要并上orders表）发邮件，且距离已经看过的时间最远的商品的限制条件。
+
+**易错点**：如果要最远的一条数据，要在最开始的表里先用ROW_NUMBER()画出列，直到最后在where条件中再去过滤；最后一步join order表是left join；已经删除的客户deleted_at是有值的，没有删除的人deleted_at是空，不要反了；选取在左表且不在orders表的数据时，用left join且orders.item_id is null即可
+
+![image-20210502194102354](images/image-20210502194102354.png)
+
+```sql
+SELECT
+  COALESCE(users.parent_user_id, users.id) AS user_id,
+  users.email_address,
+  items.id,
+  items.name
+FROM
+  (
+    SELECT
+      user_id,
+      item_id,
+      event_time,
+      ROW_NUMBER() OVER(
+        PARTITION BY user_id
+        ORDER BY
+          event_time DESC
+      ) AS view_num
+    FROM
+      dsv1069.view_item_events
+    WHERE
+      event_time >= '2017-01-01'
+  ) recent_events
+  JOIN dsv1069.users ON recent_events.user_id = users.id
+  JOIN dsv1069.items ON recent_events.item_id = items.id
+  LEFT JOIN dsv1069.orders ON recent_events.item_id = orders.item_id
+  AND recent_events.user_id = orders.user_id
+WHERE
+  view_num = 1
+  AND users.deleted_at IS NULL
+  AND orders.item_id IS NULL
+```
+
+
+
+**实际应用2**：我们想了解所有二次购买的客户里，第一次和第二次购买所相间隔的时间。
+
+重点：date函数的使用；first_order和second_order长得一样的合并，不在on而是在where中限定出前一个时间和后一个时间；dense_rank使用；如果是hive就可以用datediff函数
+
+```sql
+SELECT
+  first_order.user_id,
+  date(first_order.paid_at) AS pay1,
+  date(second_order.paid_at) AS pay2,
+  date(second_order.paid_at) - date(first_order.paid_at) AS date_diff
+FROM
+  (
+    SELECT
+      user_id,
+      paid_at,
+      dense_rank() over(
+        PARTITION by user_id
+        ORDER BY
+          paid_at ASC
+      ) AS order_num
+    FROM
+      dsv1069.orders
+  ) first_order
+  JOIN (
+    SELECT
+      user_id,
+      paid_at,
+      dense_rank() over(
+        PARTITION by user_id
+        ORDER BY
+          paid_at ASC
+      ) AS order_num
+    FROM
+      dsv1069.orders
+  ) second_order ON first_order.user_id = second_order.user_id
+WHERE
+  first_order.order_num = 1
+  AND second_order.order_num = 2
+```
+
+
+
+![image-20210502191010783](images/image-20210502191010783.png)
