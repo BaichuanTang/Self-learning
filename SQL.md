@@ -239,7 +239,7 @@ WHERE
 
 **实际应用2**：我们想了解所有二次购买的客户里，第一次和第二次购买所相间隔的时间。
 
-重点：date函数的使用；first_order和second_order长得一样的合并，不在on而是在where中限定出前一个时间和后一个时间；dense_rank使用；如果是hive就可以用datediff函数
+重点：date函数的使用；first_order和second_order长得一样的合并，不在on而是在where中限定出前一个时间和后一个时间；dense_rank使用；如果是hive就可以用datediff函数；子查询要给子表写名字
 
 ```sql
 SELECT
@@ -280,3 +280,96 @@ WHERE
 
 
 ![image-20210502191010783](images/image-20210502191010783.png)
+
+### Week4练习
+
+目的是已经安排好了一个abtest，有test_id和test_assignment。想要探究是否一个用户会在abtest之后下单。
+
+要求：如果一个用户没有下单，我们也要有一个数值为0的行来表示下单数为0；如果不在本次实验中的用户不应该被包括进来。
+
+前期要点：CAST函数分配类型；CASE WHEN aaa THEN bbb ELSE ccc END最后一个END别忘。
+
+分解步骤1：取表
+
+![image-20210502210453818](images/image-20210502210453818.png)
+
+分解步骤2：并上orders表后，通过时间来判断是否在实验日期之后下单。但是会发现有重复的操作（一次下单两件商品），因此再group by其他列并对这一列取max！！！**这个方法很实用**
+
+![image-20210502211514115](images/image-20210502211514115.png)
+
+![image-20210502211847844](images/image-20210502211847844.png)
+
+进一步的一个实验：想要得到下了多少单，多少发票，多少line_items，总收入为多少
+
+**注意点**：遇到类似情况时，永远不要忘记DISTINCT, count(distinct xxx)
+
+![image-20210502212721957](images/image-20210502212721957.png)
+
+```sql
+SELECT
+  test_events.test_id,
+  test_events.test_assignment,
+  test_events.user_id,
+  MAX(
+    CASE
+      WHEN orders.created_at > test_events.event_time THEN 1
+      ELSE 0
+    END
+  ) AS order_after_assignment,
+  COUNT(
+    DISTINCT (
+      CASE
+        WHEN orders.created_at > test_events.event_time THEN invoice_id
+        ELSE NULL
+      END
+    )
+  ) AS invoices,
+  COUNT(
+    DISTINCT (
+      CASE
+        WHEN orders.created_at > test_events.event_time THEN line_item_id
+        ELSE NULL
+      END
+    )
+  ) AS line_items,
+  SUM(
+    CASE
+      WHEN orders.created_at > test_events.event_time THEN price
+      ELSE NULL
+    END
+  ) AS total_revenue
+FROM
+  (
+    SELECT
+      event_id,
+      event_time,
+      user_id,
+      MAX(
+        CASE
+          WHEN parameter_name = 'test_id' THEN CAST(parameter_value AS int)
+          ELSE NULL
+        END
+      ) AS test_id,
+      --max的目的是只取一个
+      MAX(
+        CASE
+          WHEN parameter_name = 'test_assignment' THEN CAST(parameter_value AS int)
+          ELSE NULL
+        END
+      ) AS test_assignment
+    FROM
+      dsv1069.events
+    WHERE
+      event_name = 'test_assignment'
+    GROUP BY
+      event_id,
+      event_time,
+      user_id
+  ) AS test_events
+  LEFT JOIN dsv1069.orders ON test_events.user_id = orders.user_id
+GROUP BY
+  test_events.test_id,
+  test_events.test_assignment,
+  test_events.user_id
+```
+
