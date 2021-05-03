@@ -1,9 +1,11 @@
 # SQL
-
 - [SQL](#sql)
     - [Week1结课练习](#week1结课练习)
     - [Week2知识点](#week2知识点)
     - [Week3知识点](#week3知识点)
+      - [窗口函数 Windowing Function](#窗口函数-windowing-function)
+    - [Week4练习](#week4练习)
+      - [最终大作业](#最终大作业)
 
 学习CTE
 
@@ -385,7 +387,7 @@ GROUP BY
 
 ![image-20210502215823235](images/image-20210502215823235.png)
 
-#### 最终大作业：
+#### 最终大作业
 
 第一步，把final_assignments_qa（宽表）转化为final_assignments（长表）
 
