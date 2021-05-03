@@ -1,6 +1,8 @@
 # SQL
 - [SQL](#sql)
-    - [Week1结课练习](#week1结课练习)
+  - [Data Wrangling, Analysis and AB Testing with SQL](#data-wrangling-analysis-and-ab-testing-with-sql)
+    - [Week1知识点](#week1知识点)
+      - [结课练习](#结课练习)
     - [Week2知识点](#week2知识点)
     - [Week3知识点](#week3知识点)
       - [窗口函数 Windowing Function](#窗口函数-windowing-function)
@@ -9,7 +11,53 @@
 
 学习CTE
 
-### Week1结课练习
+## Data Wrangling, Analysis and AB Testing with SQL
+
+### Week1知识点
+
+带有空值，即便是inner join，空值也会保留
+
+![img](images/clip_image002.png)
+
+![img](images/clip_image004.png)
+
+ 
+
+where会在join后再起作用，本来leftjoin但因为一句where右边的列，导致变成了inner join
+
+![img](images/clip_image006.png)
+
+首先，先where语句再groupby语句。
+
+其次，新创建的列（referrer）不能在where语句中直接用，
+
+如果要用：①重新把那一条之前的部分再写一遍，例如：max(CASE when parameter_name ='referrer' then parameter_value else null end) is not null
+
+②整个用括号括起来，在外面重新select * from (一整堆)
+
+但是新创建的列（referrer）在groupby语句中可以直接用
+
+![img](images/clip_image008.png)
+
+日期string读取并按日子排序，转date
+
+Coalesce函数。如果一个列的值为空可以用另一个列的值
+
+![img](images/clip_image009.png)![img](images/clip_image011.png)![img](images/clip_image013.png)
+
+ 
+
+![img](images/clip_image015.png)![img](images/clip_image016.png)
+
+这一条和之前同理，加了AND条件后输出数量突然少了很多，原因竟然是id!=parent_user_id时，大部分的parent_user_id都是空，因此肯定不等于了。所以要在后面把这个条件放进or里
+
+ 
+
+![img](images/clip_image018.png)
+
+如何拆解问题为小问题：找新加入，找merge，一起join上来，再加上coalesce
+
+#### 结课练习
 
 案例背景：
 
