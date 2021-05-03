@@ -402,3 +402,21 @@ test_a b c三列分别对应test_number列里item_test_1 2 3，然后test_assign
 更简洁的写法：
 
 ![image-20210503123057498](images/image-20210503123057498.png)
+
+接下来，创建order_binary。考虑到一个订单下同时会有多个item，因此采用MAX+groupby其他列的方式取数
+
+![image-20210503130327288](images/image-20210503130327288.png)
+
+接下来：分ab组后求总数与成功次数
+
+![image-20210503130903708](images/image-20210503130903708.png)
+
+最终我自己做的地址：https://app.mode.com/editor/uibe/reports/77ef373c9d00
+
+**反思**：不过话说回来，我感觉有不完善的地方：
+
+在本例中，是order表并上item表，我们是在item表上，对每一个item施加随机实验（0或1），在item维度做的abtesting。然而，无论我们将item_view表还是order表left join到item表时，同一个item均会出现多行购买/查看的数据。因此我们在做abtesting时，会出现多出好几倍的sample size，但这个sample size真的能用吗？很明显是不能的。因为它破坏了我们原来的样本的分布：假如我order好多次，那么会对该实验的成功次数一下子增加很多。因此，在上图中，最后取总数与成功次数时，总数使用了COUNT(distinct item_id)是对的，但是SUM(order_binary_30D)要保留没有对item_id去重的怀疑。
+
+做了如下修改：首先确定我如何保证不会有重复：只取黄框中的两列，其他无关的列（蓝框）都不要；然后再Groupby黄框的内容，对绿框中用MAX函数表示是否某商品出现了被购买的行为；最后回到第一行的绿框，此时算出来的SUM就不包括重复的item_id了，并且此时item_id加不加distict都可以。
+
+![image-20210503142945995](images/image-20210503142945995.png)
