@@ -9,7 +9,11 @@
     - [Week4练习](#week4练习)
       - [最终大作业](#最终大作业)
 
-学习CTE
+**SQL两大重点**：
+
+CTE 递归调用https://www.cnblogs.com/ljhdo/p/4580347.html
+
+Windowing Funtionhttps://www.cnblogs.com/seusoftware/p/9316139.html
 
 ## Data Wrangling, Analysis and AB Testing with SQL
 
