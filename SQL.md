@@ -377,6 +377,28 @@ GROUP BY
 
 进一步的实验：我不仅要将来购买，还想要限定在30天以内的数据。如蓝框所示，这让我想起来了崔凡之前做的题目：和30天还有60天的数据比较。结论：但如果要保留日期列的话还是得join，如果单纯看用户可以不用join，直接order表join到user表后，groupby后每一个组内比较日期即可。
 
-**要点**：差30天：DATE_PART(’day‘,a-b)<=30
+**要点**：差30天：DATE_PART('day',a-b)<=30
 
 ![image-20210502215024596](images/image-20210502215024596.png)
+
+最终做abtesting：如果要换变量直接把invoices换成total_revenue就可以了
+
+![image-20210502215823235](images/image-20210502215823235.png)
+
+#### 最终大作业：
+
+第一步，把final_assignments_qa（宽表）转化为final_assignments（长表）
+
+test_a b c三列分别对应test_number列里item_test_1 2 3，然后test_assignment列里的1和0代表item_test_x是否为1
+
+![image-20210503120758481](images/image-20210503120758481.png)
+
+![image-20210503120914214](images/image-20210503120914214.png)
+
+结果：通过UNION把表连起来，外面套一层partition是为了看的更明白
+
+![image-20210503122529794](images/image-20210503122529794.png)
+
+更简洁的写法：
+
+![image-20210503123057498](images/image-20210503123057498.png)
