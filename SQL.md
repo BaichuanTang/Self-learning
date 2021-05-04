@@ -11,7 +11,7 @@
 
 **SQL两大重点**：
 
-CTE 递归调用https://www.cnblogs.com/ljhdo/p/4580347.html
+CTE 递归调用https://www.cnblogs.com/ljhdo/p/4580347.html 相当于VIEW 临时表，但是hive没有VIEW
 
 Windowing Funtionhttps://www.cnblogs.com/seusoftware/p/9316139.html
 
