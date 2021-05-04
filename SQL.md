@@ -11,9 +11,11 @@
 
 **SQL两大重点**：
 
-CTE 递归调用https://www.cnblogs.com/ljhdo/p/4580347.html 相当于VIEW 临时表，但是hive没有VIEW
+[CTE 递归调用](https://www.cnblogs.com/ljhdo/p/4580347.html) 相当于VIEW 临时表，但是hive没有VIEW
 
-Windowing Funtionhttps://www.cnblogs.com/seusoftware/p/9316139.html
+[Windowing Funtion](https://www.cnblogs.com/seusoftware/p/9316139.html)
+
+[The Math Behind A/B Testing with Example Python Code](https://towardsdatascience.com/the-math-behind-a-b-testing-with-example-code-part-1-of-2-7be752e1d06f?gi=d46e69da884c)
 
 ## Data Wrangling, Analysis and AB Testing with SQL
 
