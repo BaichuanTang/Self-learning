@@ -1,4 +1,10 @@
-# AI for Medical Prognosis
+# AI for Medicine
+
+[toc]
+
+
+
+## AI for Medical Diagnosis
 
 medical diagnostic task 医疗诊断案例
 
@@ -44,7 +50,7 @@ Chest X-Ray 可以检测many diseases，比如pneumonia, lung cancer, ，每年�
 
 分为Mass和Normal两种。pulmonary mass肺结节（肿块）
 
-lesion [ˈliːʒn]  (因伤病导致皮肤或器官的)损伤，损害
+skin lesion [ˈliːʒn]  皮肤病变
 
 diameter  [daɪˈæmɪtə(r)] 直径
 
@@ -116,4 +122,171 @@ $$
 
 需要从大样本中学习，模型很大
 
-解决方法：迁移学习：可以先从其他图像中预训练，前面的layer都是学习边缘特征。然后，固定前面的Layer，只对后面的Layer进行训练。
+##### ransfer Learning迁移学习
+
+可以先从其他图像中预训练，前面的layer都是学习边缘特征。然后，固定前面的Layer，只对后面的Layer进行训练。
+
+##### Data Augmentation数据增强
+
+增强点：
+
+不同的图片对比度/明暗程度不一样；
+
+心脏一般在左边，但是不能进行图片的翻转，否则心脏就在右边dextrocadia了
+
+对于Skin Cancer：Rotate+flip
+
+对于组织病理学Histopathology：图片中有不同的阴影shade：可以通过Rotate+Crop+Color Noise制造不同的shade来帮助泛化。
+
+![image-20210505155412796](images/image-20210505155412796.png)
+
+### 样本选取和训练集划分三大难题
+
+#### Patient Overlap
+
+- 要保持训练集和测试集独立。如果有一个带着项链的人的X-Ray一个在训练集一个在测试集，那么模型肯定会记住这个人的标签
+
+反思：在第四范式的实际的项目中，当划分训练和验证样本时：是把份拆开按页划分的，而且同一种类别的样式也没有分开，因此不能保证训练集和验证集独立。
+
+#### Set Sampling
+
+- 小样本且样本不平衡时，要保证测试集中也要有正样本，一般可以设置一个至少 X%，或者在验证集中直接选取50%的正负样本
+- 因此采样的顺序应当是：先Test Set再Validation Set最后才是Train Set
+
+#### Ground Truth
+
+inter-observer disagreement 各个专家意见不一：类似我们和业务认为的标注标准不一致。
+
+- Consensus Voting
+
+- 借助外力，比如说Mass的Chest X-ray还可以用CT打标签，比如皮肤病学Dermatology里，标签是由皮肤病变活组织检查skin lesion biopsy决定的
+
+![image-20210505163814365](images/image-20210505163814365.png)
+
+### 评价指标
+
+### Sensitivity Specificity
+
+![image-20210505170257170](images/image-20210505170257170.png)
+
+![image-20210505170336772](images/image-20210505170336772.png)
+
+![image-20210505170402279](images/image-20210505170402279.png)
+
+#### PPV NPV
+
+以上的条件概率都是基于已知真实label，来推算预测结果为真的情况。此时如果知道预测结果，想看真是结果时：
+
+PPV=Positive Predictive Value=P(disease|+)
+
+NPV=Negative Predictive Value=P(normal|-)
+
+其实PPV就是Precision，Sensitivity就是Recall
+
+![image-20210505171433484](images/image-20210505171433484.png)
+
+#### Confusion Matrix, ROC Curve, AUC
+
+![image-20210505171620715](images/image-20210505171620715.png)
+
+如果我把Threshold设为0，那么所有的样本都会被预测成+，Sensitivity会变成1，Specificity会变成0
+
+如果我把Threshold设为1，那么所有的样本都会被预测成-，Sensitivity会变成0，Specificity会变成1
+
+- 果然和马凯说的一样，在画ROC曲线前，先把所有的概率值从小到大排列，并带着他们的Label（红：+，蓝色：-）
+
+![image-20210505173212970](images/image-20210505173212970.png)
+
+### 置信区间
+
+误解：95%置信区间跟可能性没有关系！There is a nuanced difference细微的差别：
+
+![image-20210505173811802](images/image-20210505173811802.png)
+
+置信区间是你每一次抽样得到的区间，因此再做一次抽样会得到不同的置信区间
+
+如下图：这是6次抽样带来的置信区间。因此，真正的解释是：95%的抽样里的置信区间会包含真实的总体值：p
+
+![image-20210505174230072](images/image-20210505174230072.png)
+
+### MRI data
+
+核磁共振
+
+特点：多个连续的3D图像
+
+处理方法：随机选取N（这里是3）个截面，就像是图片的3个channel一样进行输入，并把三个图片合成一张。
+
+困难：这N张图不一定是正好对齐的Not Aligned，比如说有旋转，那么这些图片对应的位置会对不上
+
+解决方法：[图像配准](https://www.cnblogs.com/carsonzhu/p/11188574.html)，通过[Image Registration](https://www.sicara.ai/blog/2019-07-16-image-registration-deep-learning)把图片摆正
+
+![image-20210505182708444](images/image-20210505182708444.png)
+
+### Segmentation
+
+2D的像素：pixel 
+
+3D的像素：voxel
+
+cortex information：大脑皮层信息
+
+silver lining：困境中的一线希望
+
+#### 2D方法
+
+一张一张图片预测，然后再回到3D的分割块。但有可能失去3D信息 3D context。比如一个肿瘤在一张图片里，那么很可能旁边的图片里也有。但由于一张一张图片传，很可能学不到这个信息。
+
+#### 3D方法
+
+由于一次性放入3D太占内存，因此把3D图片切成小块，最后再拼起来。但也有可能丢失Spatial Context。
+
+#### U-Net
+
+包括Contracting（收缩） path和Expanding Path
+
+只能用2D的方法训练
+
+3D U-Net 所有操作都变成三维
+
+#### Segmentation
+
+把一张图像分成很多个小块进行预测，然后输出每个正方形小块的概率值。
+
+##### Soft Dice Loss
+
+减少Loss等于增加Overlap
+
+p对应预测概率，g对应真实值
+
+Loss越小，希望分子越大分母越小。因此可以突出g=1的情况，不会受到样本不平衡的影响。
+
+如果p在g=0的地方都是1，虽然分子没有优化（都是0），但是分母会压缩，因此也会照顾到为0样本。
+
+**引申**：[Dice Loss](https://zhuanlan.zhihu.com/p/86704421)即取绝对值的版本
+
+[图像语义分割中的 loss function](https://zhuanlan.zhihu.com/p/101773544) cross entropy loss; weighted loss; focal loss; dice soft loss; soft iou loss
+
+![image-20210505195215698](images/image-20210505195215698.png)
+
+#### 局限性
+
+TB test: tuberculosis 肺结核
+
+retrospective data 历史数据
+
+clinician 临床医师
+
+- 标准不同：清晰度不一样
+
+![image-20210505201231957](images/image-20210505201231957.png)
+
+
+
+- 解决方法：可以用旧模型在新数据上，取一小部分用于调参
+
+- 真实世界里还需要进行预处理，clean数据集。
+- 训练数据都是Frontal X-ray，真实应用也有可能是侧面Lateral X-ray
+- 真实世界要考虑Age, Sex, Socioeconomic Status
+- clinician需要可解释性
+
