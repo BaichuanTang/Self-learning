@@ -66,3 +66,18 @@ surpassing a single radiologist, a single doctor's performance might mean the sy
 
 anomaly 异常事物；反常现象
 
+That's what intrigued me about it  着迷，感兴趣[ɪnˈtriːɡd]
+
+pretty like **painstaking work** 需要细心的，辛苦的，专注的（例如标注）
+
+There is some superhumanness to it（我不知道人脑如何处理图像）
+
+put all the research on hold 搁置所有研究
+
+understand all the things that happen **under the hood** 在后台
+
+The field will split into two **trajectories**.  AI的发展走向两个方向
+
+It was implementing it myself from scratch that I felt gave me the best kind of **bang for the buck** in terms of understanding. 尽量设法获得更多的利润或价值（更多的打击for 美元）
+
+You can work with it once you have written at something yourself **on the lowest detail**,至少也写点
