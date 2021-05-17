@@ -81,3 +81,45 @@ The field will split into two **trajectories**.  AI的发展走向两个方向
 It was implementing it myself from scratch that I felt gave me the best kind of **bang for the buck** in terms of understanding. 尽量设法获得更多的利润或价值（更多的打击for 美元）
 
 You can work with it once you have written at something yourself **on the lowest detail**,至少也写点
+
+I know that in machine learning, sometimes we **speak disparagingly of** hand engineering things, or using too much value insight 轻蔑
+
+As you're **part way** through this process, sometimes you notice other categories of mistakes 一段时间后
+
+#### 错例分析与统计
+
+不仅可以知道哪类不行，还可以中途随时加入新的错误种类
+
+![image-20210517010153779](images/image-20210517010153779.png)
+
+也可以对标注样本标错的情况提示出来
+
+![image-20210517011846970](images/image-20210517011846970.png)
+
+But this quick counting procedure, can really help you make much better **prioritization decisions**, and understand how promising different approaches are to work on. 
+
+可以选定优先方向，看到哪个方向会有前景。（这点的确对业务来说很重要！）
+
+检查是否有标错的样本，但是事实上深度学习对标错的样本非常robust，不会刻意去学，因此没有必要。（只要是随机标错）但是系统性标错systematic errors不行，就像故意不标`local currency`一样
+
+There is one **caveat** to this   告诫 [ˈkævi**æt**]
+
+So I'd like to **wrap up with** just a couple of pieces of advice. 结束
+
+accented speech 语音识别中（带有异国口音的，带有他乡腔调的）
+
+And if sometimes the speaker **stutters** or if they use **nonsensical** phrases like oh, ah 口吃   无意义的
+
+it might be okay to build a more complex system **from the get-go** by building on this large body of academic literature.  一开始的时候
+
+just shoving it into the training set just to get it more training data.  **[ˈʃʌvɪŋ]** 猛推; 乱挤
+
+ there's some subtleties 细微之处
+
+speech activated rearview mirror 语音激活后视镜
+
+#### 训练集和测试集可以不同
+
+但是验证集和测试集需要一样，目的是为了探究在未知、新来数据集上的效果。例如：语音识别时用大量语料训练，但是最终落实在语音后视镜上。
+
+也不一定非要用所有的数据。
