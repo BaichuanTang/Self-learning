@@ -28,7 +28,7 @@ Indicator Function指示函数
 
 
 
-![image-20210513215445312](images/image-20210513215445312.png)
+![image-20210513215445312](../images/image-20210513215445312.png)
 
 images are blurrier  模糊 blɜːri
 
@@ -50,7 +50,7 @@ images not well framed 没有好好拍照的
 - 如果项目时间很短，来了新数据：数据量很少：①用新评价指标和新的验证测试集再次训练；②数据增强、数据合成data augmentation/data synthesis
 - 如果竞争对手再False Negative Rate表现更好：即使调整指标（根据NER经验我理解：什么时候停取决于FNR最低）
 
-![image-20210513222114025](images/image-20210513222114025.png)
+![image-20210513222114025](../images/image-20210513222114025.png)
 
 These examples may be a bit **contrived**.  预谋的; 不自然的; 人为的; 矫揉造作的; 做作的;  这是我举的不恰当的例子
 
@@ -93,11 +93,11 @@ As you're **part way** through this process, sometimes you notice other categori
 
 不仅可以知道哪类不行，还可以中途随时加入新的错误种类
 
-![image-20210517010153779](images/image-20210517010153779.png)
+![image-20210517010153779](../images/image-20210517010153779.png)
 
 也可以对标注样本标错的情况提示出来
 
-![image-20210517011846970](images/image-20210517011846970.png)
+![image-20210517011846970](../images/image-20210517011846970.png)
 
 But this quick counting procedure, can really help you make much better **prioritization decisions**, and understand how promising different approaches are to work on. 
 
@@ -135,13 +135,13 @@ speech activated rearview mirror 语音激活后视镜
 
 就像Coco经常反应模型效果下降，如果我们在训练的时候就已经划分出training-dev集，并且保证了模型没有过拟合的话，就是Coco选来的测试集的分布与咱们的分布不一样
 
-![image-20210520231534244](images/image-20210520231534244.png)
+![image-20210520231534244](../images/image-20210520231534244.png)
 
 这是每一种集合的作用，用来评估不同的错误类型。如果验证集和测试集效果不一样，则有可能模型刚好overfit to dev set
 
-![image-20210520233014497](images/image-20210520233014497.png)
+![image-20210520233014497](../images/image-20210520233014497.png)
 
-![image-20210520234346594](images/image-20210520234346594.png)
+![image-20210520234346594](../images/image-20210520234346594.png)
 
 #### 人工数据合成
 
@@ -149,7 +149,7 @@ speech activated rearview mirror 语音激活后视镜
 
 在音频上表现很好，但是自动驾驶汽车图像上需要防止只对一部分汽车过拟合。
 
-![image-20210520235503416](images/image-20210520235503416.png)
+![image-20210520235503416](../images/image-20210520235503416.png)
 
 And the challenge with artificial data synthesis is to the human ear, as far as your ears can tell, these 10,000 hours all sound the same as this one hour, so you might end up creating this very **impoverished** synthesized data set from a much smaller subset of the space without actually realizing it. 贫瘠的
 
@@ -170,7 +170,7 @@ maybe it won't hurt to include that 10 hours of data to your transfer learning, 
 
 y is a four by one vector 是一个4×1的向量
 
-![image-20210522191338103](images/image-20210522191338103.png)
+![image-20210522191338103](../images/image-20210522191338103.png)
 
 四个输出而非四分类的区别：四个输出是用四个logistic loss衡量，预测四个目标，y是4×1的向量；而多分类时只有一种输出的可能
 
@@ -192,7 +192,7 @@ phoneme [ˈfoʊniːm] 音素
 
 a face recognition **turnstile** 旋转门
 
-![image-20210522210629164](images/image-20210522210629164.png)
+![image-20210522210629164](../images/image-20210522210629164.png)
 
 swipe an RFID badge 刷卡
 
@@ -240,13 +240,13 @@ by convention 按照惯例
 
 
 
-![image-20210527152233053](images/image-20210527152233053.png)
+![image-20210527152233053](../images/image-20210527152233053.png)
 
 数学书上的卷积，是做上下、左右两次翻转（吴老师画错了），然后再去卷积的。因此实际我们深度学习中用的卷积是叫做互相关(*cross*-*correlation*)。
 
 信号处理时的卷积之所以倒过来，是为了有(A\*B)\*C=A\*(B\*C)这样的性质，但对于深度学习来说，不需要这样的性质，叫做**associativity**，可结合性。
 
-![image-20210527153817379](images/image-20210527153817379.png)
+![image-20210527153817379](../images/image-20210527153817379.png)
 
 以前对多层卷积一直理解错了：其实每个3×3×3的卷积核只会得到一个2维的4×4，如果训练两个卷积核就会得到4×4×2的输出，以此类推。
 
@@ -254,13 +254,13 @@ by convention 按照惯例
 
 最后，卷积后真正的输出是加bias b并且用relu函数的结果
 
-![image-20210527161745192](images/image-20210527161745192.png)
+![image-20210527161745192](../images/image-20210527161745192.png)
 
-![image-20210527163856226](images/image-20210527163856226.png)
+![image-20210527163856226](../images/image-20210527163856226.png)
 
 零是黑，白色是255
 
-![image-20210527210354704](images/image-20210527210354704.png)
+![image-20210527210354704](../images/image-20210527210354704.png)
 
 
 
@@ -269,7 +269,7 @@ So these is really one property of convolution neural network that **makes it le
 - 网络走的越深，w宽度和h高度越窄，channels越多
 - 一个或者多个卷积层后面会加一个池化层
 
-![image-20210527181717174](images/image-20210527181717174.png)
+![image-20210527181717174](../images/image-20210527181717174.png)
 
 So we'll do that next week, but **before wrapping this week's videos** **just one last thing which is** 结束这周
 
@@ -288,14 +288,14 @@ So we'll do that next week, but **before wrapping this week's videos** **just on
 
 5. Finally, in the softmax, 841 should be 84*10 + 10 = 850
 
-![zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example](images/zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example-1622111204245.jpg)
+![zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example](../images/zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example-1622111204245.jpg)
 
 #### 使用卷积的好处
 
 - parameter sharing 节约参数，每个像素只和周围一圈像素有关
 - sparsity of connections 不像全连接，无论物体在图片中的任何位置，都可以用filter探测到
 
-![image-20210527203659525](images/image-20210527203659525.png)
+![image-20210527203659525](../images/image-20210527203659525.png)
 
 $$n_H = \Bigl\lfloor \frac{n_{H_{prev}} - f + 2 \times pad}{stride} \Bigr\rfloor +1$$
 $$n_W = \Bigl\lfloor \frac{n_{W_{prev}} - f + 2 \times pad}{stride} \Bigr\rfloor +1$$
@@ -320,7 +320,7 @@ hparameters = {"pad" : 1,
 Z, cache_conv = conv_forward(A_prev, W, b, hparameters)
 ```
 
-![image-20210527225317370](images/image-20210527225317370.png)
+![image-20210527225317370](../images/image-20210527225317370.png)
 
  Lucent Technologies was **spun off**. 独立出来
 
