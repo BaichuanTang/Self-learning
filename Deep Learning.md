@@ -258,6 +258,12 @@ by convention 按照惯例
 
 ![image-20210527163856226](images/image-20210527163856226.png)
 
+零是黑，白色是255
+
+![image-20210527210354704](images/image-20210527210354704.png)
+
+
+
 So these is really one property of convolution neural network that **makes it less** **prone to overfitting** . 
 
 - 网络走的越深，w宽度和h高度越窄，channels越多
@@ -290,3 +296,99 @@ So we'll do that next week, but **before wrapping this week's videos** **just on
 - sparsity of connections 不像全连接，无论物体在图片中的任何位置，都可以用filter探测到
 
 ![image-20210527203659525](images/image-20210527203659525.png)
+
+$$n_H = \Bigl\lfloor \frac{n_{H_{prev}} - f + 2 \times pad}{stride} \Bigr\rfloor +1$$
+$$n_W = \Bigl\lfloor \frac{n_{W_{prev}} - f + 2 \times pad}{stride} \Bigr\rfloor +1$$
+$$n_C = \text{number of filters used in the convolution}$$
+
+
+
+**卷积的四维矩阵的含义**
+
+平时一直没有关注过，如果是一个两行三列的矩阵，平时我们会说2×3，但换算成维度第0维是2，第一维是3。
+
+但如果是四维的输入，如下图`A_prev = np.random.randn(2, 5, 7, 4)`。第一维度2代表样本数m，第二维度5代表高度h，第三维度7代表宽度w，第四维度4代表channel数为4。之所以弄混的原因是，平时我们说矩形都说长×宽，但是图片是分高度height和宽度width，但宽度其实是长度。如果一个图片是2*3，则意味着高度h为2，宽度w为3。
+
+```python
+np.random.seed(1)
+A_prev = np.random.randn(2, 5, 7, 4)
+W = np.random.randn(3, 3, 4, 8)
+b = np.random.randn(1, 1, 1, 8)
+hparameters = {"pad" : 1,
+               "stride": 2}
+
+Z, cache_conv = conv_forward(A_prev, W, b, hparameters)
+```
+
+![image-20210527225317370](images/image-20210527225317370.png)
+
+ Lucent Technologies was **spun off**. 独立出来
+
+starting to **encroach** significantly into even other fields 侵占(某人的时间);侵犯(某人的权利) ；扰乱(某人的生活等);                                                                                                                                                
+
+And then the fact that the company is not **obsessively compulsive** about IP as some other companies are makes it much easier to collaborate with universities and have arrangements by which a person can have a foot in industry and a foot in academia. 过分的；难以制止的； compulsory强行的
+
+onerous [ˈoʊnərəs]费力的
+
+#### 使用tf.data.Dataset.from_tensor_slices五步加载数据集
+
+[使用tf2做mnist（kaggle）的代码](https://github.com/Rainweic/tensorflow2-mnist)
+
+思路
+
+Step0: 准备要加载的numpy数据
+Step1: 使用 tf.data.Dataset.from_tensor_slices() 函数进行加载
+Step2: 使用 shuffle() 打乱数据
+Step3: 使用 map() 函数进行预处理
+Step4: 使用 batch() 函数设置 batch size 值
+Step5: 根据需要 使用 repeat() 设置是否循环迭代数据集
+
+##### 代码
+
+```python
+import tensorflow as tf
+from tensorflow import keras
+
+def load_dataset():
+	# Step0 准备数据集, 可以是自己动手丰衣足食, 也可以从 tf.keras.datasets 加载需要的数据集(获取到的是numpy数据) 
+	# 这里以 mnist 为例
+	(x, y), (x_test, y_test) = keras.datasets.mnist.load_data()
+	
+	# Step1 使用 tf.data.Dataset.from_tensor_slices 进行加载
+	db_train = tf.data.Dataset.from_tensor_slices((x, y)）
+	db_test = tf.data.Dataset.from_tensor_slices((x_test, y_test))
+	
+	# Step2 打乱数据
+	db_train.shuffle(1000)
+	db_test.shuffle(1000)
+	
+	# Step3 预处理 (预处理函数在下面)
+	db_train.map(preprocess)
+	db_test.map(preprocess)
+
+	# Step4 设置 batch size 一次喂入64个数据
+	db_train.batch(64)
+	db_test.batch(64)
+
+	# Step5 设置迭代次数(迭代2次) test数据集不需要emmm
+	db_train.repeat(2)
+
+	return db_train, db_test
+
+def preprocess(labels, images):
+	'''
+	最简单的预处理函数:
+		转numpy为Tensor、分类问题需要处理label为one_hot编码、处理训练数据
+	'''
+	# 把numpy数据转为Tensor
+	labels = tf.cast(labels, dtype=tf.int32)
+	# labels 转为one_hot编码
+	labels = tf.one_hot(labels, depth=10)
+	# 顺手归一化
+	images = tf.cast(images, dtype=tf.float32) / 255
+	return labels, images
+
+```
+
+
+
