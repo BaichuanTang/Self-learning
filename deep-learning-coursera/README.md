@@ -396,19 +396,19 @@ Even if you end up not working computer vision yourself, I think you find a lot 
 
 #### VGG16
 
-![image-20210606005837417](..\images\image-20210606005837417.png)
+![image-20210606005837417](../images/image-20210606005837417.png)
 
 特点：doubling on every stack of conv-layers 越来越小，越来越长
 
 ### ResNet
 
-![image-20210606010030539](..\images\image-20210606010030539.png)
+![image-20210606010030539](../images/image-20210606010030539.png)
 
 特点：第一个卷积层是正常的，但是会同时连接到第二个卷积的卷积后，ReLu函数前。
 
 The **short cut** / **Residual Connection** / **Skip Connection** is actually added before the ReLu non-linearity.
 
-![image-20210606010712360](..\images\image-20210606010712360.png)
+![image-20210606010712360](../images/image-20210606010712360.png)
 
 理论上来说，网络越深，训练误差会越少。但实际上，训练误差反而会增加。
 
@@ -422,36 +422,36 @@ But what happens with ResNet is that even as the number of layers gets deeper, y
 
 - 1x1卷积，`bottleneck`， 可以帮助节约参数，解决网络层数过多的问题，并且并不影响效果。在两个地方用到了，一个是不同卷积方式拼接后层数过多；一个是在卷积前使用减少参数（相当于承接上一个botttleneck传来的数据）
 
-![image-20210606010911489](..\images\image-20210606010911489.png)
+![image-20210606010911489](../images/image-20210606010911489.png)
 
 - 可以一次性把所有的卷积和池化放进去，由模型自己选。（会带来层数过多的问题，但已经可以通过1x1卷积解决）需要保证卷积和池化均为'same'，下图的池化池化完仍然是192层，需要1x1卷积调整成32层。
 
-![image-20210606011022658](..\images\image-20210606011022658.png)
+![image-20210606011022658](../images/image-20210606011022658.png)
 
 - 在中间部分使用和末尾部分相同的结构输出结果，如下图绿线所示，可以防止过拟合。And this appears to have a regularizing effecr on the inception network and helps prevent this network from overfitting. 
 - 让特征更加好 Ensure features computed, even in heading units, even at intermediate layers, that are not too bad for predicting the output class of a Image. 
 - 个人感觉有点像dropout，强行让参数学的更好。
 
-![image-20210606011353001](..\images\image-20210606011353001.png)
+![image-20210606011353001](../images/image-20210606011353001.png)
 
 #### MobileNet
 
 - 普通卷积
 
-![image-20210606222703276](..\images\image-20210606222703276.png)
+![image-20210606222703276](../images/image-20210606222703276.png)
 
 - depthwise卷积
 
-![image-20210606222638557](..\images\image-20210606222638557.png)
+![image-20210606222638557](../images/image-20210606222638557.png)
 
-![image-20210606223140261](..\images\image-20210606223140261.png)
+![image-20210606223140261](../images/image-20210606223140261.png)
 
 - 参数个数 2160>>432+240
 - 按经验来说，输出的channel数一般为512，f为卷积核的大小，因此在实际中一般是1：10的节约
 
-![image-20210606223502809](..\images\image-20210606223502809.png)
+![image-20210606223502809](../images/image-20210606223502809.png)
 
-![image-20210606223239801](..\images\image-20210606223239801.png)
+![image-20210606223239801](../images/image-20210606223239801.png)
 
 特点：
 
@@ -478,13 +478,13 @@ Pointwise Convolution的运算与常规卷积运算非常相似，它的卷积�
 
 - This turns out to perform well while being much less computationally expensive than earlier algorithms that used a normal convolutional operation.
 
-![image-20210606212741665](..\images\image-20210606212741665.png)
+![image-20210606212741665](../images/image-20210606212741665.png)
 
 MobileNet v2的结构也叫bottleneck，相对于v1，多了一步用1x1卷积expansion和residual的步骤
 
 在下图，它先用1x1卷积Expansion增维（Inception是用1x1降维），然后对每一层卷积，最后再用Pointwise降维。
 
-![image-20210606213151004](..\images\image-20210606213151004.png)
+![image-20210606213151004](../images/image-20210606213151004.png)
 
 I'm using this **blue glow** here to denote maybe high resolution image. 蓝光
 
@@ -492,14 +492,14 @@ I'm using this **blue glow** here to denote maybe high resolution image. 蓝光
 
 help you to choose a good trade-off between r, d, and w.
 
-![image-20210606224351013](..\images\image-20210606224351013.png)
+![image-20210606224351013](../images/image-20210606224351013.png)
 
 ### 数据增强
 
 - color shifting
 - PCA color Augmentation
 
-![image-20210607001807908](..\images\image-20210607001807908.png)
+![image-20210607001807908](../images/image-20210607001807908.png)
 
 If your image is mainly purple, if it mainly has red and blue **tints**, and very little green, then PCA Color Augmentation will add and subtract a lot to red and blue, but relatively little to  the greens, so kind of keeps the overall color of the **tint** the same. 浅色调
 
@@ -515,7 +515,7 @@ So, if you look across **a broad spectrum of** machine learning problems, you se
 
   10-crop就是对正反两张图的 正、左上右上等四个方向共10图crop
 
-![image-20210607003851940](..\images\image-20210607003851940.png)
+![image-20210607003851940](../images/image-20210607003851940.png)
 
 For multi-crop I guess at least you keep just one network around, so it doesn't **suck up** as much memory, but it still slows down your run time quite a bit 讨好
 
