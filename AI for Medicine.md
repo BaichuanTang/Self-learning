@@ -290,3 +290,78 @@ clinician 临床医师
 - 真实世界要考虑Age, Sex, Socioeconomic Status
 - clinician需要可解释性
 
+## AI for Medical Prognosis
+
+(对病情的)预断，预后; 预测; 预言; 展望;
+
+Machine learning is a powerful tool for prognosis, and can provide a tremendous boost to this branch of medicine by using many different types of medical data to make accurate predictions about a patient's future health.
+
+multiple examples of prognostic tasks, including a few examples where prognosis using risk calculations is part of **routine clinical practice**. 常规临床做法
+
+mortality 死亡率
+
+**Without further ado,** let's dive in. 毫不迟延; 干脆; 立即
+
+there are blood tests that are used to estimate the risk of developing breast and **ovarian cancer**. 乳腺癌、卵巢癌
+
+An example of this is **cancer staging**, which gives an estimate of the survival time for patients with that particular cancer. 癌症分期（晚期）
+
+Another example is the six-month mortality risk. This is used for patients with terminal conditions that have become advanced and **uncurable** and is used to determine who should receive **end-of-life care**. 不能治愈的 临终关怀
+
+estimating the 10-year **cardiovascular** risk of an individual. 心血管的;
+
+Profile might also include physical exam findings such as **vital signs** including temperature and blood pressure. 生命体征
+
+Atrial fibrillation 心房颤动（简称房颤）
+
+Atrial fibrillation is a common abnormal **heart rhythm** that puts the patient at a risk of stroke. 心率 
+
+A 70-year-old male diagnosed with Atrial fibrillation has **hypertension** and diabetes. 高血压
+
+congestive heart failure CHF 充血性心脏衰竭; 心力衰竭; 
+
+Liver Disease Mortality 肝病死亡率
+
+This is the **model for end-stage liver disease** which produces what is called the MELD Score。肝病终期
+
+**take the natural log** of the values before **plugging** them **into** the model. 
+
+Now this makes sense because HDL-C is high-density **lipoprotein cholesterol** and that's often called good cholesterol. And thus we might expect would lower the risk of heart disease.脂蛋白 胆固醇
+
+The apple in my left hand already looks **stale** and will expire in two days, 不新鲜的
+
+#### *concordant* pairs
+
+同序对（*concordant* pairs）和异序对（*discordant* pairs）
+
+如果分类变量与数值预测结果方向相同，就叫concordant。如果数值预测两者一样，就叫risk tie
+
+要形成permissible pair，就需要两个gt不同的人，也就是一定要一个死一个没死。
+
+![image-20210607235705188](../images/image-20210607235705188.png)
+
+![image-20210607235651995](../images/image-20210607235651995.png)
+
+#### C-Index
+
+注意：C-index和acc并没有直接的关系！
+
+![image-20210607235852164](../images/image-20210607235852164.png)
+
+![image-20210607235938891](../images/image-20210607235938891.png)
+
+#### 用正态拟合数据
+
+```python
+from scipy.stats import norm
+data = np.random.normal(50,12, 5000)
+fitting_params = norm.fit(data)
+norm_dist_fitted = norm(*fitting_params)
+t = np.linspace(0,100, 100)
+plt.hist(data, bins=60, density=True)
+plt.plot(t, norm_dist_fitted.pdf(t))
+plt.title('Example of Normally Distributed Data')
+plt.show()
+```
+
+![image-20210608001756585](../images/image-20210608001756585.png)
