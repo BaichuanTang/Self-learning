@@ -210,8 +210,6 @@ radar 雷达 lidar 激光雷达 [ai]
 
 steer your own car 转向 
 
-be 
-
 **be mindful of** where you apply end-to-end deep learning. 考虑到
 
 make good **prioritization** decisions in terms of how to move forward on your machine learning project 优化的决定
@@ -227,6 +225,8 @@ helped with this **resurgence** of neural networks and deep learning. 复兴
 even if you don't end up building computer vision systems **per se**,  [ˌpɜːr ˈseɪ] 本身，亲自
 
 The convolution operation is one of the fundamental **building blocks** of a convolutional neural network. 构成要素
+
+## CV
 
 [OpenCV边缘检测(Sobel,Scharr,Laplace,Canny)](https://blog.csdn.net/qq_34711208/article/details/81703341)
 
@@ -520,4 +520,12 @@ So, if you look across **a broad spectrum of** machine learning problems, you se
 For multi-crop I guess at least you keep just one network around, so it doesn't **suck up** as much memory, but it still slows down your run time quite a bit 讨好
 
 you can use an open source implementation if possible, because the open source implementation might have figured out all the **finicky** details like the learning rate, case scheduler, and other hyper parameters. 难讨好的，难取悦的, 需细心的，需注意细节的
+
+
+
+## NLP
+
+referring to the **genre** of music you want to generate or maybe the first few notes of the piece of music you want [ˈʒɑːn] 音乐的类型
+
+Jazz **improvisation** with LSTM 即兴创作
 
