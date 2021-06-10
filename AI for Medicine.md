@@ -338,17 +338,17 @@ The apple in my left hand already looks **stale** and will expire in two days, �
 
 要形成permissible pair，就需要两个gt不同的人，也就是一定要一个死一个没死。
 
-![image-20210607235705188](../images/image-20210607235705188.png)
+![image-20210607235705188](images/image-20210607235705188.png)
 
-![image-20210607235651995](../images/image-20210607235651995.png)
+![image-20210607235651995](images/image-20210607235651995.png)
 
 #### C-Index
 
 注意：C-index和acc并没有直接的关系！
 
-![image-20210607235852164](../images/image-20210607235852164.png)
+![image-20210607235852164](images/image-20210607235852164.png)
 
-![image-20210607235938891](../images/image-20210607235938891.png)
+![image-20210607235938891](images/image-20210607235938891.png)
 
 #### 用正态拟合数据
 
@@ -364,4 +364,18 @@ plt.title('Example of Normally Distributed Data')
 plt.show()
 ```
 
-![image-20210608001756585](../images/image-20210608001756585.png)
+![image-20210608001756585](images/image-20210608001756585.png)
+
+ *Diabetic Retinopathy* 糖尿病视网膜病变 
+
+Often machine learning models are considered black boxes due to their complex inner workings, but in medicine, the ability to explain and interpret a model may be critical for human acceptance and trust. 
+
+![image-20210610223445613](images/image-20210610223445613.png)
+
+Systolic Blood Pressure 收缩压
+
+![image-20210610233325093](images/image-20210610233325093.png)
+
+We can see that there is a **spike** on the older people between 65 and 75. 尖刺
+
+缺失值的启示：删除缺失值有可能会让模型的训练数据的分布变化，从而导致效果不一致。由上图，old test里年轻人很少，很可能是医生不记录年轻人的血压，但他死了。由于空，我们删了这条数据，最终导致上线效果不一致。
