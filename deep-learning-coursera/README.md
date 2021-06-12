@@ -521,6 +521,196 @@ For multi-crop I guess at least you keep just one network around, so it doesn't 
 
 you can use an open source implementation if possible, because the open source implementation might have figured out all the **finicky** details like the learning rate, case scheduler, and other hyper parameters. 难讨好的，难取悦的, 需细心的，需注意细节的
 
+### 图片增强与迁移学习
+
+具体可见W2A2中用MobileNet实现增强与迁移学习的例子，感觉这是实战中最常用的手段了。
+
+#### 用AutoTune设定每次读取文件的个数
+
+You may have encountered `dataset.prefetch` in a previous TensorFlow assignment, as an important extra step in data preprocessing. 
+
+Using `prefetch()` prevents a memory bottleneck that can occur when reading from disk. It sets aside some data and keeps it ready for when it's needed, by creating a source dataset from your input data, applying a transformation to preprocess it, then iterating over the dataset one element at a time. Because the iteration is streaming, the data doesn't need to fit into memory.
+
+You can set the number of elements to prefetch manually, or you can use `tf.data.experimental.AUTOTUNE` to choose the parameters automatically. Autotune prompts `tf.data` to tune that value dynamically at runtime, by tracking the time spent in each operation and feeding those times into an optimization algorithm. The optimization algorithm tries to find the best allocation of its CPU budget across all tunable operations. 
+
+To increase diversity in the training set and help your model learn the data better, it's standard practice to augment the images by transforming them, 
+
+i.e., randomly flipping and rotating them. Keras' Sequential API offers a straightforward method for these kinds of data augmentations, with built-in, customizable preprocessing layers. These layers are saved with the rest of your model and can be re-used later.  Ahh, so convenient! 
+
+As always, you're invited to read the official docs, which you can find for data augmentation [here](https://www.tensorflow.org/tutorials/images/data_augmentation).
+
+#### 多轮训练
+
+If you do not set initial_epoch and you train for 2 epochs, then rerun the fit_generator with epochs=4 it will train for 4 **more** epochs starting from the state preserved at the end of the second epoch (provided you use the built in optimizers). Again the history object state is NOT preserved from the initial training and only contains the data for the last 4 epochs. I noticed this because I plot the validation loss versus epochs.
+
+说白了就是给tensorboard画图用的，
+
+如果继续训练时，设置nitial_epoch为0，epochs为500，tensorboard会在同一张图上重叠显示两段结果；
+如果initial_epoch设置为500，epochs应该设置为1000，tensorboard会合并成0-1000代的整段图。
+
+因此只是用于显示，实际上再训练的时候还会接着训练
+
+![image-20210612184252252](../images/image-20210612184252252.png)
+
+## Object Detection
+
+### Object Localization
+
+![image-20210612202905073](../images/image-20210612202905073.png)
+
+Localization：知道这是一个汽车的图像（已经识别出来），在图中把汽车定位出来
+
+Detection：里面有很多汽车，我都要找出来
+
+So, in particular, you can have the neural network output four more numbers, and I'm going to call them bx, by, bh, and bw. And these four numbers parameterized the bounding box of the detected object
+
+![image-20210612210859171](../images/image-20210612210859171.png)
+
+y的输出形式，第一个 $p_c$表示是否有我们想分类的1、2、3三种类别。之后的四个角是他的四个坐标。最后$c_1$ $c_2$ $c_3$ 是最终的分类类别，这三个数只能取其一为1。
+
+**很重要**：对于损失函数来说，$c_1$ $c_2$ $c_3$ 应当使用log likelihood+Softmax，因为它们是多分类。b1b2b3b4应当用L2损失，因为它们相当于回归。$p_c$是二分类，应当用Logistic Regression Loss。
+
+
+
+![image-20210612211537174](../images/image-20210612211537174.png)
+
+#### 业务启示
+
+它的损失函数就是L2损失，但是如果$p_c$为0，也就是图中没有物体要检测，那么损失只看$\hat{y_1}$和$y_1$就行了，也就是有没有分对图中是否有物体要检测这一点。
+
+这一点在业务中我曾经问过马凯：结构话模型需不需要加负样本进去，例如：tff模板，有些图片是第二页，只含有少量的文字，没有要提取的字段。马凯说不用加，因为有前置分类模型让它进入不了tff这一块。但我现在觉得，如果有负样本，并不会让模型学到任何东西，因为没有损失发生，因此这个样本就没有反向传播这一流程。就像这里一样。
+
+![image-20210612212610697](../images/image-20210612212610697.png)
+
+### Landmark Detection
+
+landmark 地标
+
+![image-20210612215205676](../images/image-20210612215205676.png)
+
+**for the sake of argument**, let's say 64 points or 64 landmarks on the face. 为了论证
+
+define the **jaw line**by selecting a number of landmarks and generating a label training sets that contains all of these landmarks, you can then have the neural network to tell you where are all the key positions or the key landmarks on a face 下颌线
+
+用AR augmented reality时，ins抖音，如何探测你的脸并把妆画上去
+
+Being able to detect these landmarks on the face, there's also a key building block for the computer graphics effects that warp the face or drawing various special effects like putting a crown or a hat on the person. 
+
+where someone will have had to go through and laboriously annotate all of these landmarks.
+
+**laboriously [ləˈbɔriəsli] 辛苦地**
+
+One last example, if you are interested in people pose detection, you could also define a few key positions like the midpoint of the chest, the left shoulder, left **elbow**, the **wrist**, and so on, and just have a neural network to annotate key positions in the person's pose as well and by having a neural network output,
+
+elbow 肘部 wrist [rɪst] 手腕
+
+### Sliding Window Detection
+
+![image-20210612222200257](../images/image-20210612222200257.png)
+
+方法：用一个小块去扫描全局，捕获汽车。逐渐换更大的window再去扫描
+
+input into this cofinite a small rectangular region. 
+
+ if you use a very coarse stride, then that will reduce the number of windows you need to pass through the convnet, but that coarser **granularity** may hurt performance. Whereas high computational cost.
+
+在以前，都是人工构造的特征，因此sliding window的方式很好用，因为计算快，都是linear function
+
+now running a single classification task is much more expensive and sliding windows this way **is infeasibily slow**.
+
+###  A convolutional implementation of sliding windows object detection
+
+用卷积可以大量减少参数，
+
+之前的和卷积形式的实现效果是相同的，如下：
+
+![image-20210612224524390](../images/image-20210612224524390.png)
+
+![image-20210612225311640](../images/image-20210612225311640.png)
+
+可以快速知道哪一块里有汽车，而不是一步一步重复计算，一个神经网络就搞定。
+
+缺点：不够准确
+
+![image-20210612225437356](../images/image-20210612225437356.png)
+
+### YOLO
+
+划分成3x3=9个区域（实际中会划分成19*19=361个小块），以物体的中心点在哪个区域来判断物体属于哪个区域，采取最开始的方法定义y。因此输出为3x3x8。
+
+![image-20210612234006467](../images/image-20210612234006467.png)
+
+我觉得训练还是很好理解的，标注好左上角坐标和height,width（如果h,w出现横跨小块就会大于1），划分好小块就可以训练，这就好解释了。即使一个物体横跨多个区域，也只分进一个区域。
+
+这里可能会有一个误解：并不是分别对这9个区域做9次卷积，而是只做一次卷积得到3x3x8的输出，所有卷积都共享参数。看起来并没有告诉卷积核：哪些初始区域对应了最终3x3=9个的输出，但是模型会去学对应关系。
+
+预测时，不需要考虑一个物体横跨多个区域，也只分进一个区域这一特点，因为已经不是训练了。
+
+![image-20210612234813920](../images/image-20210612234813920.png)
+
+##### 个人评价
+
+- YOLO吸取了Object Localization的优点，保留了一样的输出方式。
+
+- 没有用传统的landmark的方法，当时课程项目还是用haar cascade特征做的。
+- 采用了conv sliding window类似的策略，可以共享参数，一次卷积。但conv sliding window对不同大小的输入图片会得到不同的输出，且无法处理物体横跨的情况，只能定死地看每一个固定小块内是否有汽车，且没法适应物体的大小程度。
+- 但是YOLO可以处理跨小块的物体，且用回归的方式返回坐标。并且每个物体只会被分进一个小块内，所以物体都一定能被检测到，且横跨的问题也解决了。
+- 但有人肯定会问：我为什么要3x3的小块呢？直接对汽车的四个坐标做回归不就完事了？根本原因是因为你不知道图中有几个汽车，因此划分成小块后，只需要对每个小块做一次分类就行了。
+- 肯定有人又要问：这不就是削弱版的sliding window吗？首先，sliding window只负责判断该小块内有没有汽车，sliding window当然可以用图片单分类的方式做8维输出回归，但重复学了很多仅仅平移就学到的知识，没有必要。其次，对于跨块的样本，YOLO中直接用大于1的w和h就解决了这个问题。sliding window当然可以学YOLO一样很多步stride走完整张图片，但是相对于YOLO，它其实做了很多没必要的步骤，就好像打比赛的时候用Ensabmble模型，但是真正迎来效果大提升的永远是创新的方法。
+- 说白了，就是sliding window的简版，在原来只有分类的版本上加了回归，最亮眼的是设计的xywh坐标的回归，并保证不会重复看，减少了大量的计算负担。
+
+### 注意点：
+
+there are some more complicated parameterizations involving sigmoid functions to make sure this is between 0 and 1. 
+
+左上角的坐标的输出会加sigmoid激活函数，w和h会用exp激活函数保证是非负的
+
+In the meantime, if you want, you can take a look at YOLO paper reference at the bottom of these past couple slides I use. Although, just one warning, if you take a look at these papers which is the YOLO paper is one of the harder papers to read. I remember, when I was reading this paper for the first time, I had a really hard time figuring out what was going on. And I wound up asking a couple of my friends, very good researchers to help me figure it out, and even they had a hard time understanding some of the details of the paper. So, if you look at the paper, it's okay if you have a hard time figuring it out. 
+
+I wish it was more uncommon, but it's not that uncommon, sadly, for even senior researchers, that review research papers and have a hard time figuring out the details. And have to look at open source code, or contact the authors, or something else to figure out the details of these outcomes. But don't let me stop you from taking a look at the paper yourself though if you wish, but this is one of the harder ones. 
+
+### Intersection Over Union
+
+IoU=Intersection/Union
+
+Correct if IoU>0.5
+
+If you want to be more **stringent**, you can judge an answer as correct, only if the IoU is greater than equal to 0.6 or some other number. [ˈstrɪndʒənt] 严格的
+
+### Non-max Supression
+
+解决对一个物体重复画框多次的问题
+
+non-max means that you're going to output your maximal probabilities classifications but suppress the **close-by** ones that are non-maximal. 离xx很近
+
+![image-20210613011935571](../images/image-20210613011935571.png)
+
+如果多分类就分别做n次
+
+#### 业务启示
+
+当时看小韩老师的输出，有一个`4.`还有一个`4. xxxxxx` 于是我很好奇，问小韩老师：为什么会这样呢？这不应该啊，有两个框输出了相同的一部分，一个框的内容在另一个框以内？小韩老师说：确实有这种情况，并让我算一下IoU卡阈值。我当时觉得太麻烦就没算。
+
+现在想来，应该是小韩老师做的non-max supression里，对IoU卡的阈值为0.5，但这个例子可能只有0.4，因此没卡掉。当时考虑到可能是有字重叠的情况（例如印章），要加强识别的能力，因此就像目标检测一样这样做。
+
+然而，在ocr里还有一种情况，如果正常文本的话，不会有重叠的，因此可以直接卡IoU为一个非常低的值。
+
+### Anchor Boxes
+
+解决一个box探测多个目标的问题
+
+实在搞不动了，待更新
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## NLP
