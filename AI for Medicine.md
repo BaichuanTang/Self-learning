@@ -253,7 +253,9 @@ silver lining：困境中的一线希望
 
 把一张图像分成很多个小块进行预测，然后输出每个正方形小块的概率值。
 
-##### Soft Dice Loss
+#### Soft Dice Loss
+
+还记得深度学习的课上，吴老师详细讲了U-Net，但是没有讲损失函数，这里反而讲了它的损失函数
 
 减少Loss等于增加Overlap
 
@@ -379,3 +381,25 @@ Systolic Blood Pressure 收缩压
 We can see that there is a **spike** on the older people between 65 and 75. 尖刺
 
 缺失值的启示：删除缺失值有可能会让模型的训练数据的分布变化，从而导致效果不一致。由上图，old test里年轻人很少，很可能是医生不记录年轻人的血压，但他死了。由于空，我们删了这条数据，最终导致上线效果不一致。
+
+imputation, **impute** the missing value 估算    注意：插值是interpolation
+
+### mean imputation 和 regression imputation
+
+我以为是在不同的类别内，分别对0和1的数据进行回归/取平均，然后预测出缺失值。其实不然，它是一视同仁，直接对所有数据进行回归/取平均。测试集也用训练集的数据
+
+![image-20210613204304411](images/image-20210613204304411.png)
+
+![image-20210613205321502](images/image-20210613205321502.png)
+
+![image-20210613204328200](images/image-20210613204328200.png)
+
+![image-20210613203709224](images/image-20210613203709224.png)
+
+Cardiovascular disease event prediction / CVD prediction 心血管疾病
+
+systolic blood pressure心脏收缩压
+
+无论如何都要填充空值，即使空值不准的目的是：空值可能是数据在某些特定原因下形成的，为了保持数据原有的分布，所以要填充空值。
+
+### 生存模型
