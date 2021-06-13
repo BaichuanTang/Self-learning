@@ -28,7 +28,7 @@ Indicator Function指示函数
 
 
 
-![image-20210513215445312](../images/image-20210513215445312.png)
+![image-20210513215445312](../images//image-20210513215445312.png)
 
 images are blurrier  模糊 blɜːri
 
@@ -50,7 +50,7 @@ images not well framed 没有好好拍照的
 - 如果项目时间很短，来了新数据：数据量很少：①用新评价指标和新的验证测试集再次训练；②数据增强、数据合成data augmentation/data synthesis
 - 如果竞争对手再False Negative Rate表现更好：即使调整指标（根据NER经验我理解：什么时候停取决于FNR最低）
 
-![image-20210513222114025](../images/image-20210513222114025.png)
+![image-20210513222114025](../images//image-20210513222114025.png)
 
 These examples may be a bit **contrived**.  预谋的; 不自然的; 人为的; 矫揉造作的; 做作的;  这是我举的不恰当的例子
 
@@ -93,11 +93,11 @@ As you're **part way** through this process, sometimes you notice other categori
 
 不仅可以知道哪类不行，还可以中途随时加入新的错误种类
 
-![image-20210517010153779](../images/image-20210517010153779.png)
+![image-20210517010153779](../images//image-20210517010153779.png)
 
 也可以对标注样本标错的情况提示出来
 
-![image-20210517011846970](../images/image-20210517011846970.png)
+![image-20210517011846970](../images//image-20210517011846970.png)
 
 But this quick counting procedure, can really help you make much better **prioritization decisions**, and understand how promising different approaches are to work on. 
 
@@ -135,13 +135,13 @@ speech activated rearview mirror 语音激活后视镜
 
 就像Coco经常反应模型效果下降，如果我们在训练的时候就已经划分出training-dev集，并且保证了模型没有过拟合的话，就是Coco选来的测试集的分布与咱们的分布不一样
 
-![image-20210520231534244](../images/image-20210520231534244.png)
+![image-20210520231534244](../images//image-20210520231534244.png)
 
 这是每一种集合的作用，用来评估不同的错误类型。如果验证集和测试集效果不一样，则有可能模型刚好overfit to dev set
 
-![image-20210520233014497](../images/image-20210520233014497.png)
+![image-20210520233014497](../images//image-20210520233014497.png)
 
-![image-20210520234346594](../images/image-20210520234346594.png)
+![image-20210520234346594](../images//image-20210520234346594.png)
 
 #### 人工数据合成
 
@@ -149,7 +149,7 @@ speech activated rearview mirror 语音激活后视镜
 
 在音频上表现很好，但是自动驾驶汽车图像上需要防止只对一部分汽车过拟合。
 
-![image-20210520235503416](../images/image-20210520235503416.png)
+![image-20210520235503416](../images//image-20210520235503416.png)
 
 And the challenge with artificial data synthesis is to the human ear, as far as your ears can tell, these 10,000 hours all sound the same as this one hour, so you might end up creating this very **impoverished** synthesized data set from a much smaller subset of the space without actually realizing it. 贫瘠的
 
@@ -170,7 +170,7 @@ maybe it won't hurt to include that 10 hours of data to your transfer learning, 
 
 y is a four by one vector 是一个4×1的向量
 
-![image-20210522191338103](../images/image-20210522191338103.png)
+![image-20210522191338103](../images//image-20210522191338103.png)
 
 四个输出而非四分类的区别：四个输出是用四个logistic loss衡量，预测四个目标，y是4×1的向量；而多分类时只有一种输出的可能
 
@@ -192,7 +192,7 @@ phoneme [ˈfoʊniːm] 音素
 
 a face recognition **turnstile** 旋转门
 
-![image-20210522210629164](../images/image-20210522210629164.png)
+![image-20210522210629164](../images//image-20210522210629164.png)
 
 swipe an RFID badge 刷卡
 
@@ -240,13 +240,13 @@ by convention 按照惯例
 
 
 
-![image-20210527152233053](../images/image-20210527152233053.png)
+![image-20210527152233053](../images//image-20210527152233053.png)
 
 数学书上的卷积，是做上下、左右两次翻转（吴老师画错了），然后再去卷积的。因此实际我们深度学习中用的卷积是叫做互相关(*cross*-*correlation*)。
 
 信号处理时的卷积之所以倒过来，是为了有(A\*B)\*C=A\*(B\*C)这样的性质，但对于深度学习来说，不需要这样的性质，叫做**associativity**，可结合性。
 
-![image-20210527153817379](../images/image-20210527153817379.png)
+![image-20210527153817379](../images//image-20210527153817379.png)
 
 以前对多层卷积一直理解错了：其实每个3×3×3的卷积核只会得到一个2维的4×4，如果训练两个卷积核就会得到4×4×2的输出，以此类推。
 
@@ -254,13 +254,13 @@ by convention 按照惯例
 
 最后，卷积后真正的输出是加bias b并且用relu函数的结果
 
-![image-20210527161745192](../images/image-20210527161745192.png)
+![image-20210527161745192](../images//image-20210527161745192.png)
 
-![image-20210527163856226](../images/image-20210527163856226.png)
+![image-20210527163856226](../images//image-20210527163856226.png)
 
 零是黑，白色是255
 
-![image-20210527210354704](../images/image-20210527210354704.png)
+![image-20210527210354704](../images//image-20210527210354704.png)
 
 
 
@@ -269,7 +269,7 @@ So these is really one property of convolution neural network that **makes it le
 - 网络走的越深，w宽度和h高度越窄，channels越多
 - 一个或者多个卷积层后面会加一个池化层
 
-![image-20210527181717174](../images/image-20210527181717174.png)
+![image-20210527181717174](../images//image-20210527181717174.png)
 
 So we'll do that next week, but **before wrapping this week's videos** **just one last thing which is** 结束这周
 
@@ -288,14 +288,14 @@ So we'll do that next week, but **before wrapping this week's videos** **just on
 
 5. Finally, in the softmax, 841 should be 84*10 + 10 = 850
 
-![zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example](../images/zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example-1622111204245.jpg)
+![zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example](../images//zsA-BM-WEemwyhIGNHHGIg_bfd232955b8aad2ed0c156bbac9f09b3_nn-example-1622111204245.jpg)
 
 #### 使用卷积的好处
 
 - parameter sharing 节约参数，每个像素只和周围一圈像素有关
 - sparsity of connections 不像全连接，无论物体在图片中的任何位置，都可以用filter探测到
 
-![image-20210527203659525](../images/image-20210527203659525.png)
+![image-20210527203659525](../images//image-20210527203659525.png)
 
 $$n_H = \Bigl\lfloor \frac{n_{H_{prev}} - f + 2 \times pad}{stride} \Bigr\rfloor +1$$
 $$n_W = \Bigl\lfloor \frac{n_{W_{prev}} - f + 2 \times pad}{stride} \Bigr\rfloor +1$$
@@ -320,7 +320,7 @@ hparameters = {"pad" : 1,
 Z, cache_conv = conv_forward(A_prev, W, b, hparameters)
 ```
 
-![image-20210527225317370](../images/image-20210527225317370.png)
+![image-20210527225317370](../images//image-20210527225317370.png)
 
  Lucent Technologies was **spun off**. 独立出来
 
@@ -396,19 +396,19 @@ Even if you end up not working computer vision yourself, I think you find a lot 
 
 #### VGG16
 
-![image-20210606005837417](../images/image-20210606005837417.png)
+![image-20210606005837417](../images//image-20210606005837417.png)
 
 特点：doubling on every stack of conv-layers 越来越小，越来越长
 
 ### ResNet
 
-![image-20210606010030539](../images/image-20210606010030539.png)
+![image-20210606010030539](../images//image-20210606010030539.png)
 
 特点：第一个卷积层是正常的，但是会同时连接到第二个卷积的卷积后，ReLu函数前。
 
 The **short cut** / **Residual Connection** / **Skip Connection** is actually added before the ReLu non-linearity.
 
-![image-20210606010712360](../images/image-20210606010712360.png)
+![image-20210606010712360](../images//image-20210606010712360.png)
 
 理论上来说，网络越深，训练误差会越少。但实际上，训练误差反而会增加。
 
@@ -422,36 +422,36 @@ But what happens with ResNet is that even as the number of layers gets deeper, y
 
 - 1x1卷积，`bottleneck`， 可以帮助节约参数，解决网络层数过多的问题，并且并不影响效果。在两个地方用到了，一个是不同卷积方式拼接后层数过多；一个是在卷积前使用减少参数（相当于承接上一个botttleneck传来的数据）
 
-![image-20210606010911489](../images/image-20210606010911489.png)
+![image-20210606010911489](../images//image-20210606010911489.png)
 
 - 可以一次性把所有的卷积和池化放进去，由模型自己选。（会带来层数过多的问题，但已经可以通过1x1卷积解决）需要保证卷积和池化均为'same'，下图的池化池化完仍然是192层，需要1x1卷积调整成32层。
 
-![image-20210606011022658](../images/image-20210606011022658.png)
+![image-20210606011022658](../images//image-20210606011022658.png)
 
 - 在中间部分使用和末尾部分相同的结构输出结果，如下图绿线所示，可以防止过拟合。And this appears to have a regularizing effecr on the inception network and helps prevent this network from overfitting. 
 - 让特征更加好 Ensure features computed, even in heading units, even at intermediate layers, that are not too bad for predicting the output class of a Image. 
 - 个人感觉有点像dropout，强行让参数学的更好。
 
-![image-20210606011353001](../images/image-20210606011353001.png)
+![image-20210606011353001](../images//image-20210606011353001.png)
 
 #### MobileNet
 
 - 普通卷积
 
-![image-20210606222703276](../images/image-20210606222703276.png)
+![image-20210606222703276](../images//image-20210606222703276.png)
 
 - depthwise卷积
 
-![image-20210606222638557](../images/image-20210606222638557.png)
+![image-20210606222638557](../images//image-20210606222638557.png)
 
-![image-20210606223140261](../images/image-20210606223140261.png)
+![image-20210606223140261](../images//image-20210606223140261.png)
 
 - 参数个数 2160>>432+240
 - 按经验来说，输出的channel数一般为512，f为卷积核的大小，因此在实际中一般是1：10的节约
 
-![image-20210606223502809](../images/image-20210606223502809.png)
+![image-20210606223502809](../images//image-20210606223502809.png)
 
-![image-20210606223239801](../images/image-20210606223239801.png)
+![image-20210606223239801](../images//image-20210606223239801.png)
 
 特点：
 
@@ -466,7 +466,7 @@ Depthwise Separable Convolution是将一个完整的卷积运算分解为两步�
 不同于常规卷积操作，Depthwise Convolution的一个卷积核负责一个通道，一个通道只被一个卷积核卷积。上面所提到的常规卷积每个卷积核是同时操作输入图片的每个通道。
 同样是对于一张5×5像素、三通道彩色输入图片（shape为5×5×3），Depthwise Convolution首先经过第一次卷积运算，不同于上面的常规卷积，DW完全是在二维平面内进行。卷积核的数量与上一层的通道数相同（通道和卷积核一一对应）。所以一个三通道的图像经过运算后生成了3个Feature map(如果有same padding则尺寸与输入层相同为5×5)，如下图所示。
 
-![img](../images/企业微信截图_16229992964716.png)
+![img](../images//企业微信截图_16229992964716.png)
 
 Depthwise Convolution完成后的Feature map数量与输入层的通道数相同，无法扩展Feature map。而且这种运算对输入层的每个通道独立进行卷积运算，没有有效的利用不同通道在相同空间位置上的feature信息。因此需要Pointwise Convolution来将这些Feature map进行组合生成新的Feature map。
 
@@ -474,17 +474,17 @@ Depthwise Convolution完成后的Feature map数量与输入层的通道数相同
 
 Pointwise Convolution的运算与常规卷积运算非常相似，它的卷积核的尺寸为 1×1×M，M为上一层的通道数。所以这里的卷积运算会将上一步的map在深度方向上进行加权组合，生成新的Feature map。有几个卷积核就有几个输出Feature map。如下图所示。
 
-![img](../images/20180812163629103)
+![img](../images//20180812163629103)
 
 - This turns out to perform well while being much less computationally expensive than earlier algorithms that used a normal convolutional operation.
 
-![image-20210606212741665](../images/image-20210606212741665.png)
+![image-20210606212741665](../images//image-20210606212741665.png)
 
 MobileNet v2的结构也叫bottleneck，相对于v1，多了一步用1x1卷积expansion和residual的步骤
 
 在下图，它先用1x1卷积Expansion增维（Inception是用1x1降维），然后对每一层卷积，最后再用Pointwise降维。
 
-![image-20210606213151004](../images/image-20210606213151004.png)
+![image-20210606213151004](../images//image-20210606213151004.png)
 
 I'm using this **blue glow** here to denote maybe high resolution image. 蓝光
 
@@ -492,14 +492,14 @@ I'm using this **blue glow** here to denote maybe high resolution image. 蓝光
 
 help you to choose a good trade-off between r, d, and w.
 
-![image-20210606224351013](../images/image-20210606224351013.png)
+![image-20210606224351013](../images//image-20210606224351013.png)
 
 ### 数据增强
 
 - color shifting
 - PCA color Augmentation
 
-![image-20210607001807908](../images/image-20210607001807908.png)
+![image-20210607001807908](../images//image-20210607001807908.png)
 
 If your image is mainly purple, if it mainly has red and blue **tints**, and very little green, then PCA Color Augmentation will add and subtract a lot to red and blue, but relatively little to  the greens, so kind of keeps the overall color of the **tint** the same. 浅色调
 
@@ -515,7 +515,7 @@ So, if you look across **a broad spectrum of** machine learning problems, you se
 
   10-crop就是对正反两张图的 正、左上右上等四个方向共10图crop
 
-![image-20210607003851940](../images/image-20210607003851940.png)
+![image-20210607003851940](../images//image-20210607003851940.png)
 
 For multi-crop I guess at least you keep just one network around, so it doesn't **suck up** as much memory, but it still slows down your run time quite a bit 讨好
 
@@ -537,7 +537,7 @@ To increase diversity in the training set and help your model learn the data bet
 
 i.e., randomly flipping and rotating them. Keras' Sequential API offers a straightforward method for these kinds of data augmentations, with built-in, customizable preprocessing layers. These layers are saved with the rest of your model and can be re-used later.  Ahh, so convenient! 
 
-As always, you're invited to read the official docs, which you can find for data augmentation [here](https://www.tensorflow.org/tutorials/images/data_augmentation).
+As always, you're invited to read the official docs, which you can find for data augmentation [here](https://www.tensorflow.org/tutorials/../images/data_augmentation).
 
 #### 多轮训练
 
@@ -550,13 +550,13 @@ If you do not set initial_epoch and you train for 2 epochs, then rerun the fit_g
 
 因此只是用于显示，实际上再训练的时候还会接着训练
 
-![image-20210612184252252](../images/image-20210612184252252.png)
+![image-20210612184252252](../images//image-20210612184252252.png)
 
 ## Object Detection
 
 ### Object Localization
 
-![image-20210612202905073](../images/image-20210612202905073.png)
+![image-20210612202905073](../images//image-20210612202905073.png)
 
 Localization：知道这是一个汽车的图像（已经识别出来），在图中把汽车定位出来
 
@@ -564,7 +564,7 @@ Detection：里面有很多汽车，我都要找出来
 
 So, in particular, you can have the neural network output four more numbers, and I'm going to call them bx, by, bh, and bw. And these four numbers parameterized the bounding box of the detected object
 
-![image-20210612210859171](../images/image-20210612210859171.png)
+![image-20210612210859171](../images//image-20210612210859171.png)
 
 y的输出形式，第一个 $p_c$表示是否有我们想分类的1、2、3三种类别。之后的四个角是他的四个坐标。最后$c_1$ $c_2$ $c_3$ 是最终的分类类别，这三个数只能取其一为1。
 
@@ -572,7 +572,7 @@ y的输出形式，第一个 $p_c$表示是否有我们想分类的1、2、3三�
 
 
 
-![image-20210612211537174](../images/image-20210612211537174.png)
+![image-20210612211537174](../images//image-20210612211537174.png)
 
 #### 业务启示
 
@@ -580,13 +580,13 @@ y的输出形式，第一个 $p_c$表示是否有我们想分类的1、2、3三�
 
 这一点在业务中我曾经问过马凯：结构话模型需不需要加负样本进去，例如：tff模板，有些图片是第二页，只含有少量的文字，没有要提取的字段。马凯说不用加，因为有前置分类模型让它进入不了tff这一块。但我现在觉得，如果有负样本，并不会让模型学到任何东西，因为没有损失发生，因此这个样本就没有反向传播这一流程。就像这里一样。
 
-![image-20210612212610697](../images/image-20210612212610697.png)
+![image-20210612212610697](../images//image-20210612212610697.png)
 
 ### Landmark Detection
 
 landmark 地标
 
-![image-20210612215205676](../images/image-20210612215205676.png)
+![image-20210612215205676](../images//image-20210612215205676.png)
 
 **for the sake of argument**, let's say 64 points or 64 landmarks on the face. 为了论证
 
@@ -606,7 +606,7 @@ elbow 肘部 wrist [rɪst] 手腕
 
 ### Sliding Window Detection
 
-![image-20210612222200257](../images/image-20210612222200257.png)
+![image-20210612222200257](../images//image-20210612222200257.png)
 
 方法：用一个小块去扫描全局，捕获汽车。逐渐换更大的window再去扫描
 
@@ -624,21 +624,21 @@ now running a single classification task is much more expensive and sliding wind
 
 之前的和卷积形式的实现效果是相同的，如下：
 
-![image-20210612224524390](../images/image-20210612224524390.png)
+![image-20210612224524390](../images//image-20210612224524390.png)
 
-![image-20210612225311640](../images/image-20210612225311640.png)
+![image-20210612225311640](../images//image-20210612225311640.png)
 
 可以快速知道哪一块里有汽车，而不是一步一步重复计算，一个神经网络就搞定。
 
 缺点：不够准确
 
-![image-20210612225437356](../images/image-20210612225437356.png)
+![image-20210612225437356](../images//image-20210612225437356.png)
 
 ### YOLO
 
 划分成3x3=9个区域（实际中会划分成19*19=361个小块），以物体的中心点在哪个区域来判断物体属于哪个区域，采取最开始的方法定义y。因此输出为3x3x8。
 
-![image-20210612234006467](../images/image-20210612234006467.png)
+![image-20210612234006467](../images//image-20210612234006467.png)
 
 我觉得训练还是很好理解的，标注好左上角坐标和height,width（如果h,w出现横跨小块就会大于1），划分好小块就可以训练，这就好解释了。即使一个物体横跨多个区域，也只分进一个区域。
 
@@ -646,7 +646,7 @@ now running a single classification task is much more expensive and sliding wind
 
 预测时，不需要考虑一个物体横跨多个区域，也只分进一个区域这一特点，因为已经不是训练了。
 
-![image-20210612234813920](../images/image-20210612234813920.png)
+![image-20210612234813920](../images//image-20210612234813920.png)
 
 ##### 个人评价
 
@@ -683,7 +683,7 @@ If you want to be more **stringent**, you can judge an answer as correct, only i
 
 non-max means that you're going to output your maximal probabilities classifications but suppress the **close-by** ones that are non-maximal. 离xx很近
 
-![image-20210613011935571](../images/image-20210613011935571.png)
+![image-20210613011935571](../images//image-20210613011935571.png)
 
 如果多分类就分别做n次
 
@@ -704,9 +704,9 @@ non-max means that you're going to output your maximal probabilities classificat
 - 预测时：探测在这两种anchor box形状下的输出
 - 训练时：对每一个物体，定好中心，用两个anchor box分别去套，哪一个IoU大，就归进哪个anchor box
 
-![image-20210613133703472](images/image-20210613133703472.png)
+![image-20210613133703472](../images/image-20210613133703472.png)
 
-![image-20210613134556782](images/image-20210613134556782.png)
+![image-20210613134556782](../images/image-20210613134556782.png)
 
 #### 缺点
 
@@ -727,16 +727,16 @@ In the next video, let's take everything we've seen and **tie it back together i
 
 #### 训练预测
 
-![image-20210613140406404](images/image-20210613140406404.png)
+![image-20210613140406404](../images/image-20210613140406404.png)
 
-![image-20210613140820571](images/image-20210613140820571.png)
+![image-20210613140820571](../images/image-20210613140820571.png)
 
 #### non-max supression
 
 - 先处理anchor box的信息，对每一个grid cell输出的两个anchor box，过滤到低概率的anchor box （注意，在这一步中，可能有的grid cell的左上角xy不在该grid cell内）
 - 然后就不管anchor box和grid cell了，直接对每一个分出来的类别进行non-max supression，不断找到一个类别中最高概率的输出，去掉所有IoU>0.5的框，再往下找次高的输出，再去掉。。。
 
-![image-20210613141040671](images/image-20210613141040671.png)
+![image-20210613141040671](../images/image-20210613141040671.png)
 
 ### Region Proposal R-CNN
 
@@ -749,14 +749,14 @@ Regions with CNNs, 两步走
 
  you find maybe 2000 blobs and place bounding boxes around about 2000 blobs and run your classifier on just those 2000 blobs, and this can be a much smaller number of positions on which to run your convnet classifier, then if you have to run it at every single position throughout the image
 
-![image-20210613143317330](images/image-20210613143317330.png)
+![image-20210613143317330](../images/image-20210613143317330.png)
 
 - 缺点是R-CNN很慢
 - 虽然是用CNN再去探测一遍，但是R-CNN仍然会返回坐标，就像之前的输出一样
 
 #### 演变
 
-![image-20210613144226282](images/image-20210613144226282.png)
+![image-20210613144226282](../images/image-20210613144226282.png)
 
 2013年的R-CNN是用神经网络一个一个移动，再去卷积的；
 
@@ -786,37 +786,37 @@ take sth. with a grain of salt 这个习语的字面意思是“和一撮盐一�
 
 ### Semantic Segmentation with U-Net
 
-![image-20210613151214438](images/image-20210613151214438.png)
+![image-20210613151214438](../images/image-20210613151214438.png)
 
 segment out in the image exactly which pixels correspond to certain parts of the patient's **anatomy**. 解剖出的人体
 
-![image-20210613153207150](images/image-20210613153207150.png)
+![image-20210613153207150](../images/image-20210613153207150.png)
 
 ### Transpose Convolution
 
-![image-20210613154044164](images/image-20210613154044164.png)
+![image-20210613154044164](../images/image-20210613154044164.png)
 
-![image-20210613154539652](images/image-20210613154539652.png)
+![image-20210613154539652](../images/image-20210613154539652.png)
 
 
 
 如果重叠，就对两个区域内的值相加
 
-![image-20210613154748781](images/image-20210613154748781.png)
+![image-20210613154748781](../images/image-20210613154748781.png)
 
-![image-20210613154849153](images/image-20210613154849153.png)
+![image-20210613154849153](../images/image-20210613154849153.png)
 
-![image-20210613154923137](images/image-20210613154923137.png)
+![image-20210613154923137](../images/image-20210613154923137.png)
 
 #### 网络结构
 
-![image-20210613161340136](images/image-20210613161340136.png)
+![image-20210613161340136](../images/image-20210613161340136.png)
 
 skip connection既可以学到 lower resolution, but high level spatial, high level contextual information（也就是原本从U-Net中一步一步传过来的信息），也可以学到high resolution, the low level, more detailed texture like information
 
 What the skip connection does is it allows the neural network to take this very high resolution, low level feature information where it could capture for every pixel position, how much fairy stuff is there in this pixel? 
 
-![image-20210613164058997](images/image-20210613164058997.png)
+![image-20210613164058997](../images/image-20210613164058997.png)
 
 往下走时，channel数不断增加，但是h,w是变小的，每一步池化都对应了红色箭头。
 
