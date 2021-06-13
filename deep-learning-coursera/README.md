@@ -697,9 +697,192 @@ non-max means that you're going to output your maximal probabilities classificat
 
 ### Anchor Boxes
 
-解决一个box探测多个目标的问题
+解决一个在一个小块内探测多个目标的问题，用到了anchor box的思想：
 
-实在搞不动了，待更新
+- 预先定义好两种形状的anchor box
+- y的输出维度由3x3x8变成3x3x16，上下两个区域分别对应两种anchor box的输出
+- 预测时：探测在这两种anchor box形状下的输出
+- 训练时：对每一个物体，定好中心，用两个anchor box分别去套，哪一个IoU大，就归进哪个anchor box
+
+![image-20210613133703472](images/image-20210613133703472.png)
+
+![image-20210613134556782](images/image-20210613134556782.png)
+
+#### 缺点
+
+1. 如果一个小块中由三个物体，但只用了两个anchor box，那么就没有办法检测第三个。但实际中我们划分成19x19的小块，已经很少会出现一个小块三个物体的情况了
+2. 如果两个物体在同一个grid cell里，且拥有一样的anchor box（例如两个人），也就是有一样的形状，那么也没法处理
+
+better results that anchor boxes gives you is it allows your learning algorithm to specialize better. 
+
+this allows your learning algorithm to specialize so that some of the outputs can specialize in detecting white, fat objects like cars, and some of the output units can specialize in detecting tall, skinny objects like pedestrians. 
+
+在之后的YOLO论文中，用kmeans分类出两种你所需要的anchor box形状
+
+And then to use that to select a set of anchor boxes that this most **stereotypically representative** of the maybe multiple 典型代表性          
+
+In the next video, let's take everything we've seen and **tie it back together into** the YOLO algorithm.   向回串联
+
+### YOLO算法合集
+
+#### 训练预测
+
+![image-20210613140406404](images/image-20210613140406404.png)
+
+![image-20210613140820571](images/image-20210613140820571.png)
+
+#### non-max supression
+
+- 先处理anchor box的信息，对每一个grid cell输出的两个anchor box，过滤到低概率的anchor box （注意，在这一步中，可能有的grid cell的左上角xy不在该grid cell内）
+- 然后就不管anchor box和grid cell了，直接对每一个分出来的类别进行non-max supression，不断找到一个类别中最高概率的输出，去掉所有IoU>0.5的框，再往下找次高的输出，再去掉。。。
+
+![image-20210613141040671](images/image-20210613141040671.png)
+
+### Region Proposal R-CNN
+
+Regions with CNNs, 两步走
+
+1. propose regions
+2. classifiers
+
+#### segmentation algorithm
+
+ you find maybe 2000 blobs and place bounding boxes around about 2000 blobs and run your classifier on just those 2000 blobs, and this can be a much smaller number of positions on which to run your convnet classifier, then if you have to run it at every single position throughout the image
+
+![image-20210613143317330](images/image-20210613143317330.png)
+
+- 缺点是R-CNN很慢
+- 虽然是用CNN再去探测一遍，但是R-CNN仍然会返回坐标，就像之前的输出一样
+
+#### 演变
+
+![image-20210613144226282](images/image-20210613144226282.png)
+
+2013年的R-CNN是用神经网络一个一个移动，再去卷积的；
+
+2015年的Fast R-CNN是用sliding window的方式，用卷积代替手工移动，有共享参数的优势，因此更快。
+
+2016年的Faster R-CNN是何凯明大神提出的，用卷积神经网络去propose region，解决了原有的segmentation algorithm计算慢的问题（但还是比不上YOLO快）
+
+uses a convolutional neural network instead of one of the more traditional segmentation algorithms to propose a blob on those regions, and that wound up running quite a bit faster than the fast R-CNN algorithm. 
+
+#### 业务启示
+
+我们当时用的ocr分定位识别两步，实际上用的mrcnn作为定位模型，且没有要求定位模型提供输出，只要求它提供bounding box，再用识别模型去识别它，因为带transformer的识别模型效果一定比直接识别文字的效果来得更好，但是牺牲了很多效率，增加了很多computational cost。
+
+#### 个人评价
+
+R-CNN是人类的正常思维方式，yolo简直是神想出来的。你去思考object detection算法的时候，你肯定希望分这两步走：1.先判断这里是不是会有一个东西 2.这是个什么东西。但经常人看到一样东西就会直接反应出：哦，这是一个杯子，再看到它在桌子上（定位它的坐标）。而不是先观察到桌子上有一个东西，再看出它是一个杯子
+
+R-CNN慢的原因是：它仍然需要两步走，先propose region看自由分割出的区域内是否有物体，再对region识别。Yolo跳过了propose region的一步，直接一次卷积后输出所有结果。
+
+But that's my personal opinion and not necessary the opinion of the whole computer vision research committee. So feel free to **take that with a grain of salt**, 
+
+take sth. with a grain of salt 这个习语的字面意思是“和一撮盐一起吃下去”，为什么要与盐一起吃呢？
+
+据说这个习语要追溯到罗马时代，罗马将军庞培曾发现一种解毒剂，必须和着一小把盐才服得下去。解毒剂难咽，加了盐也许好咽些，于是这句习语用于描述对一些不靠谱的，值得怀疑的东西，得“和着盐”才能勉强接受。
+
+现在，对某件事情或某人说的话有所保留，将信将疑，持怀疑态度，就可以说 take it with a grain of salt.
+
+### Semantic Segmentation with U-Net
+
+![image-20210613151214438](images/image-20210613151214438.png)
+
+segment out in the image exactly which pixels correspond to certain parts of the patient's **anatomy**. 解剖出的人体
+
+![image-20210613153207150](images/image-20210613153207150.png)
+
+### Transpose Convolution
+
+![image-20210613154044164](images/image-20210613154044164.png)
+
+![image-20210613154539652](images/image-20210613154539652.png)
+
+
+
+如果重叠，就对两个区域内的值相加
+
+![image-20210613154748781](images/image-20210613154748781.png)
+
+![image-20210613154849153](images/image-20210613154849153.png)
+
+![image-20210613154923137](images/image-20210613154923137.png)
+
+#### 网络结构
+
+![image-20210613161340136](images/image-20210613161340136.png)
+
+skip connection既可以学到 lower resolution, but high level spatial, high level contextual information（也就是原本从U-Net中一步一步传过来的信息），也可以学到high resolution, the low level, more detailed texture like information
+
+What the skip connection does is it allows the neural network to take this very high resolution, low level feature information where it could capture for every pixel position, how much fairy stuff is there in this pixel? 
+
+![image-20210613164058997](images/image-20210613164058997.png)
+
+往下走时，channel数不断增加，但是h,w是变小的，每一步池化都对应了红色箭头。
+
+注意点：白色箭头是skip connection，还记得残差连接吗？就是把原有的输入**加**到现有的channel后面，组成一个更深的网络。但这里是**拼接**（图中深蓝和浅蓝），再用卷积调整channel数，一个类似Inception的方法。
+
+最终输出是$n_{classes}$层，再通过argmax函数画出我们实际看到的segmentation map
+
+一些需要理解的细节：是怎么argmax生成segmentation map的，为什么不直接用残差而是要像Inception一样拼接？残差是用Add()函数，拼接用什么函数？
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
