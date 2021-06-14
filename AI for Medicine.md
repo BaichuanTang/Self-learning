@@ -403,3 +403,121 @@ systolic blood pressure心脏收缩压
 无论如何都要填充空值，即使空值不准的目的是：空值可能是数据在某些特定原因下形成的，为了保持数据原有的分布，所以要填充空值。
 
 ### 生存模型
+
+![image-20210614184726885](images/image-20210614184726885.png)
+
+censoring 统计学借以描述对某些个体不可能观察到特定点事件发生的现象。在本例中，被观察者在14个月后中途退出了，就写成14+，代表censoring
+
+开始时间是做手术的时间，只要是没有发病，或者退出实验，都会写出xx+
+
+![image-20210614185101350](images/image-20210614185101350.png)
+
+![image-20210614185347173](images/image-20210614185347173.png)
+
+Right censoring：在last contact后总会发生，而不是一直都不会发生。right就是在右边的意思
+
+![image-20210614185519597](images/image-20210614185519597.png)
+
+![image-20210614190105261](images/image-20210614190105261.png)
+
+die immediately：实际是每个人立刻死，这时候的存活率，就是存活到这个时间点的人数
+
+Never die相比于die immediately的差别是：分子加上了censoring的部分
+
+![image-20210614200003170](images/image-20210614200003170.png)
+
+![image-20210614200123434](images/image-20210614200123434.png)
+
+Kaplan Meier 估计 /maier/
+
+![image-20210614194502850](images/image-20210614194502850.png)
+
+![image-20210614195329338](images/image-20210614195329338.png)
+
+学会了如何推导：S(t)=1-F(T)，F(T)就是T的累计密度函数。
+
+λ(t)
+
+=P(T=t)/P(T>=t)  根据条件概率展开
+
+=f(T)/S(T)  课件中S(t)的形式应当写成>=的，不过在连续的情况下其实都一样
+
+=-S'(t)/S(T)  然后再回到exp的形式
+
+![image-20210614195459945](images/image-20210614195459945.png)
+
+![image-20210614195605843](images/image-20210614195605843.png)
+
+![image-20210614200836876](images/image-20210614200836876.png)
+
+![image-20210614201040395](images/image-20210614201040395.png)
+
+![image-20210614201437328](images/image-20210614201437328.png)
+
+![image-20210614201949386](images/image-20210614201949386.png)
+
+![image-20210614202438008](images/image-20210614202438008.png)
+
+**个人总结**：survival是在起始点看，将来每个时间点还能活下多少人。hazard是将来到了哪个时间点，在那个时间点上你死掉的概率。cumulative hazard是hazard的积分
+
+![image-20210614204651621](images/image-20210614204651621.png)
+
+用exp是保证它乘的系数大于0.在这个例子中，价格is_smoker和age都取0，那么exp(0)=1，就相当于不变。用exp还有一个好处，做系数解释比较不同X的效果时，直接是exp(coef*ΔX)
+
+![image-20210614210700137](images/image-20210614210700137.png)
+
+![image-20210614221738187](images/image-20210614221738187.png)
+
+![image-20210614222113149](images/image-20210614222113149.png)
+
+这就是Cox proportional hazard model
+
+chemotherapy [ˌkiːmoʊ]化疗
+
+Nelson Aalen estimator
+
+![image-20210614232300451](images/image-20210614232300451.png)
+
+之前的Caplan Meire是估计Survival S的，这里的Nelson Aalen是估计cumulative Hazard的
+
+之前是连乘，这里是连加
+
+![image-20210614232824961](images/image-20210614232824961.png)
+
+死亡率得分 mortality score
+
+![image-20210614233536456](images/image-20210614233536456.png)
+
+Harrell's C-index
+
+![image-20210614234057564](images/image-20210614234057564.png)
+
+感觉这里的逻辑有点奇怪：他说，正因为这个人只活了20个月，那么他更加惨，那么他的risk score更高。可是我记得之前算hazard时，是有一个先降后升的过程
+
+![image-20210614235013402](images/image-20210614235013402.png)
+
+这种也算concordant
+
+![image-20210614235034363](images/image-20210614235034363.png)
+
+![image-20210614235053467](images/image-20210614235053467.png)
+
+这两种都算risk tie，无论是T相同还是risk score相同。这是因为他们之间不完全错，所以都叫risk tie
+
+以前的permissible pair是一定要一个人死一个人没死，现在的即使两个人T相同也可以
+
+![image-20210614234707987](images/image-20210614234707987.png)
+
+B outlived A B比A活得长
+
+![image-20210614234907837](images/image-20210614234907837.png)
+
+![image-20210614234946958](images/image-20210614234946958.png)
+
+只有这两种是non-permissible
+
+![image-20210615000300526](images/image-20210615000300526.png)
+
+这里面的risk score既可以来源于mortality score，也可以来源于Cox proportional hazard model
+
+## AI for Medical Treatment
