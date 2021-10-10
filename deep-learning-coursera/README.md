@@ -400,7 +400,7 @@ Even if you end up not working computer vision yourself, I think you find a lot 
 
 特点：doubling on every stack of conv-layers 越来越小，越来越长
 
-### ResNet
+#### ResNet
 
 ![image-20210606010030539](../images/image-20210606010030539.png)
 
@@ -826,21 +826,49 @@ What the skip connection does is it allows the neural network to take this very 
 
 一些需要理解的细节：是怎么argmax生成segmentation map的，为什么不直接用残差而是要像Inception一样拼接？残差是用Add()函数，拼接用什么函数？
 
+向上走的路径：upsampling，decoder，expanding path
 
+向下走的路径：downsampling, encoder, contracting path
 
+### 人脸识别
 
+#### Siamese Network
 
+![image-20210707233338918](../images/image-20210707233338918.png)
 
+#### Triplet Loss
 
+用Anchor Image和Positive、Negative Image对比
 
+定义优化目标如下，但是会遇到一个问题，如果我让他们所有人的向量完全重合，那么也能满足目标。此时需要让每张图片的encoding都互相不同。第二点，需要≤0-α，其中α是一个非常小的数，同时和SVM里的margin一样，这里的α移到等式左边也是margin，即两个向量最少的间隔距离。
 
+![image-20210707235115046](../images/image-20210707235115046.png)
 
+最后还用Loss=max(dis,0)的原因是：类似于铰链损失函数，只要距离<0，就当作损失为0（因为损失不能为负数吧）
 
+最后，如何选择样本？如果随机选择的话，损失函数的这一条件很容易就满足了。因此要选择本身就相似的样本，且可以节约计算成本。
 
+#### north of sth
 
+ used to say that an [amount](https://dictionary.cambridge.org/zhs/词典/英语/amount) is more than the [stated](https://dictionary.cambridge.org/zhs/词典/英语/state) [amount](https://dictionary.cambridge.org/zhs/词典/英语/amount):*The [share](https://dictionary.cambridge.org/zhs/词典/英语/share) [price](https://dictionary.cambridge.org/zhs/词典/英语/price) is [expected](https://dictionary.cambridge.org/zhs/词典/英语/expected) to [rise](https://dictionary.cambridge.org/zhs/词典/英语/rise) north of $20.* “SMART 词汇”：相关单词和短语
 
+Datasets **north** of a million images is not uncommon, some companies are using **north** of 10 million images and some companies have **north** of 100 million images with which to try to train these systems.
 
+预测时，训练一个logistic unit来判断他俩是否为同一个人（1 或者 0），也可以用chi square similarity
 
+上下两个网络的参数均是一样的
+
+![image-20210708002010794](../images/image-20210708002010794.png)
+
+![image-20210708002603919](../images/image-20210708002603919.png)
+
+还有一个trick，每一个人的输出向量其实是可以pre-compute的，预测时只需要对新图像进行预测。
+
+### 神经风格迁移
+
+Content+Style=Generated Imaghe
+
+待补充，没怎么看懂
 
 
 
@@ -898,7 +926,375 @@ What the skip connection does is it allows the neural network to take this very 
 
 ## NLP
 
+### RNN
+
 referring to the **genre** of music you want to generate or maybe the first few notes of the piece of music you want [ˈʒɑːn] 音乐的类型
 
 Jazz **improvisation** with LSTM 即兴创作
 
+![image-20210709215658153](../images/image-20210709215658153.png)
+
+为什么不能用普通的网络来预测？
+
+ And to **kick off** the whole thing, we'll also have some either made-up activation at time zero, 开始
+
+
+
+![image-20210709235604376](../images/image-20210709235604376.png)
+
+Let's keep **fleshing out** this graph. 充实
+
+![image-20210710101743643](../images/image-20210710101743643.png)
+
+the input x could be maybe just an integer, telling it what **genre** of music you want or what is the first note of the music you want, and if you don't want to input anything, x could be a null input, could always be the vector zeroes as well. 
+
+例如机器翻译，也是many to many，但是输入输出的长度不一样
+
+![image-20210710102200118](../images/image-20210710102200118.png)
+
+![image-20210710102259396](../images/image-20210710102259396.png)
+
+So, now you know most of the building blocks, the building are pretty much all of these neural networks except that there are some **subtleties** with sequence generation, which is what we'll discuss in the next video. 微妙之处
+
+#### RNN损失函数
+
+![image-20210710120726843](../images/image-20210710120726843.png)
+
+#### GRU
+
+如果遇到exploding gradients，其实用gradient clipping直接截断就行。但是vanishing gradient没有好办法处理，这就有了GRU。Gated recurrent Unit
+
+![image-20210710172630027](../images/image-20210710172630027.png)
+
+因为大多数情况下$Γ_u$都是非常接近0，因此$C^t$可以一直保存下去，因此不会有梯度消失的问题。
+
+![image-20210710174613122](../images/image-20210710174613122.png)
+
+ the GRU is one of the most commonly used versions that researchers have converged to and found as robust and useful for many different problems.
+
+![image-20210710174828421](../images/image-20210710174828421.png)
+
+But GRUs and LSTMs are two specific **instantiations** of this set of ideas that are most commonly used. 实例
+
+![image-20210710175005633](../images/image-20210710175005633.png)
+
+#### LSTM
+
+u=update; f=forget; o=output
+
+![image-20210710181523561](../images/image-20210710181523561.png)
+
+![image-20210710181903103](../images/image-20210710181903103.png)
+
+![image-20210710191611762](../images/image-20210710191611762.png)
+
+*Acyclic* Graph 无环图
+
+![image-20210710214536395](../images/image-20210710214536395.png)
+
+So, for example, if you're building a speech recognition system, then the BRNN will let you take into account the entire speech utterance but if you use this straightforward implementation, you need to wait for the person to stop talking to get the entire **utterance** before you can actually process it and make a speech recognition prediction. 话
+
+![image-20210710215057006](../images/image-20210710215057006.png)
+
+### Word Embedding
+
+you'll see how to debias word embeddings. That's to reduce undesirable gender or **ethnicity** or other types of bias that learning algorithms can sometimes pick up 种族
+
+Well, man and woman doesn't **connotes** much about age.  意味，暗示
+
+![image-20210712124811265](../images/image-20210712124811265.png)
+
+300维的向量，每一维其实是一种特征
+
+What if you see Robert Lin is a **durian cultivator**? 榴莲栽培机
+
+huge amounts of unlabeled text that you can suck down essentially for free off the Internet to figure out that orange, apple, and durian are fruits. 吸进
+
+But the terms encoding and embedding are used somewhat **interchangeably**. 可互换地
+
+#### Analogy Reasoning
+
+Let's go on to the next video, where you'll see how word embeddings can help with **reasoning about analogies**.类比推理
+
+![image-20210712132003973](../images/image-20210712132003973.png)
+
+![image-20210712133017095](../images/image-20210712133017095.png)
+
+So, that's why the embedding matrix E times this one-hot vector here **winds up** selecting out this 300-dimensional column corresponding to the word Orange. /waɪnd/ 结束
+
+![image-20210714002057904](../images/image-20210714002057904.png)
+
+别忘了推导softmax
+
+**缺点**：Softmax步骤非常computationally expensive
+
+**注意点**：需要用较低频的词才会有效果，如果是高频的词，如is, are, I，那么模型的梯度更新将会学习这些没用的东西，而且学这些词出来的效果也肯定不好。
+
+word2vec有两种，一种是skip gram，也就是用中间词预测两边的词。
+
+![img](../images/v2-514a2e9c173fbb3bc5ce7eb67197825d_1440w.jpg)
+
+
+**这样我们的神经网络模型在遍历整个语料库的时候（比如维基百科文本）将看到寻多个(center: orange, context: juice)样本（相对于(orange, Ak47)样本来说），同理也会看到许多个(apple, juice)样本。**
+**对应第2小点的内容，这样使得模型不管看到”orange”还是看到”apple”都要预测出”juice”，就”逼”着它让它学习让它认为这两个单词是高度相似的，即我们最终得到的”orange”和”apple”词向量是高度相似的。**
+而CBOW则与之相反，用的是上下文词来预测中心词。但是与skip-gram有一点差别的是，它获得的训练样本并非是直观以为的(context: juice, center: orange)。而是将窗口内的所有上下文词放在一起来预测中心词，即(context: [glass, of, juice], center: orange),即：
+
+![img](../images/v2-7a9d78d1dadc2314f23ce63986fea750_1440w.jpg)
+
+
+
+
+
+#### Negative Sampling
+
+解决softmax需要从所有词中计算昂贵的问题
+
+把softmax问题转化为n个逻辑回归问题，用逻辑回归区分开这些随机挑选的单词。
+
+#### GloVe
+
+global vectors for word representations
+
+![image-20210714230854589](../images/image-20210714230854589.png)
+
+$X_{ij}$定义为 #times i appears in context of j，因此$X_{ij}$为0时，就变成log$X_{ij}$就没有意义，因此用$f(X_{ij})$作为权重加在前面。还有一个原因，对于有些频繁出现的词，例如this is of a 来说，他们相对于不常出现的词（例如durian）理应被赋予更大的权重
+
+the weighting factor can be a function that gives a meaningful amount of computation, even to the less frequent words like durion, and gives more weight but not an **unduly** large amount of weight to words like, this, is, of, a, which just appear a lot in language. 不适当地
+
+And so, there are various heuristics for choosing this weighting function F that need or gives these words too much weight nor gives the infrequent words too little weight. 
+
+![image-20210714233544274](../images/image-20210714233544274.png)
+
+ 当真正构建出词向量时，不能保证每一个维度都是有意义的。![image-20210714233351224](../images/image-20210714233351224.png)
+
+
+
+#### Debiasing
+
+对于bias的方向也可以用奇异值分解SVC来做，类似PCA的方法
+
+![image-20210717022931122](../images/image-20210717022931122.png)
+
+And really, in the more general case, you might want words like doctor or babysitter to be **ethnicity neutral** or **sexual orientation neutral**, and so on, but we'll just use gender as the illustrating example here.
+
+So for words like doctor and babysitter, let's just project them onto this axis to **eliminate their component in the bias direction**. 
+
+第三步：Equalize：确保每组词在遇到第三个带性别的词的时候不会有偏差，例如，grandpa和grandma遇到babysister是相同的 
+
+第二步：Neutralize，如何确定哪些词需要被中性，grandpa和grandma肯定不需要放进第二部里确定bias的方向。因此这一步用一个逻辑回归筛选出不需要进入Neutralize步骤的词
+
+#### Beam Search
+
+为什么不用greedy search？因为对每一个词挑下一个最优的词而言，真实来说不如直接挑全局最优的词好。同时，当句子长时，也不可能遍历所有可能性的结果。所以用approximate search algorithm
+
+But the set of all English sentences of a certain length is too large to **exhaustively** enumerate. So, we have to **resort to** a search algorithm.  耗尽一切地；  使用
+
+Beam Search的参数B代表beam width，同时考虑三个结果
+
+![image-20210717174542913](../images/image-20210717174542913.png)
+
+- 第一轮：挑出三个词
+- 第二轮，对这三个词，分别考虑10000个词典中的所有可能，因此是30000种可能，从中跳出来概率最高的三条路径。（注意：此时第一轮中可能有词已经被扔掉）
+- 接下来每一轮都是挑概率最高的三条路径，也就是30000中选三个结果
+
+Just want to notice that because of beam width is equal to three, every step you **instantiate** three copies of the network to evaluate these partial sentence fragments and the output. 
+
+如果beam width退化成1，就变成了greedy search
+
+But when B gets very large, there is often diminishing returns.
+
+##### Length Normalization
+
+对于概率值，如果连乘，就会遭遇result in **numerical underflow**. Meaning that it's too small for the floating part representation in your computer to store accurately. 
+
+因此采用取log的方法
+
+So by taking logs, you end up with a more **numerically stable algorithm** that is **less prone to** rounding errors, numerical rounding errors, or to really numerical underflow.
+
+So in most implementations, you keep track of **the sum of logs of the probabilities** rather than the product of probabilities. 
+
+而且，模型还有喜欢造短句的问题
+
+And so this objective function has **an undesirable effect**, that maybe it **unnaturally tends to prefer** very short translations. 
+
+对结果除以词的数量的0.7次方，这是一个更soft的方式，是在full nomalizatio和no normalization之间
+
+There isn't a great theoretical justification for it, but people have found this works well. People have found that it works well in practice, so many groups will do this. And you can try out different values of alpha and see which one gives you the best result.
+
+最后，和DFS和BFS相比，不一定是全局最好的结果，但是快，效率高，效果也还可以。
+
+beam search is an **approximate search** **algorithm**, also called a **heuristic search algorithm**. 
+
+##### 业务启示
+
+当时小韩老师的ocr置信度分数也做了normalization，避免ocr框里出现长词，NLP里的分数也会有这样的问题，
+
+##### Error Analysis
+
+![image-20210717182744962](../images/image-20210717182744962.png)
+
+如果本来$P(y^*|x)$ >$P(\hat{y}|x)$ ，说明Beam Search挑的时候有问题，因为Beam Search挑的时候每一轮挑下一个y都是挑能使$P(y|x)$最大的y，而此时检查发现不符合这个情况，因此需要增加Beam Width来使Beam Search挑出这个结果。如果$P(y^*|x)$ <$P(\hat{y}|x)$ ，说明Beam Search的结果是对的，说明RNN没有给出正确的预测，从而RNN需要重训。
+
+#### Bleu Score
+
+为了解决同时有多个好结果（人类会有多种翻译方式），怎么衡量的问题。
+
+bilingual evaluation understudy
+
+![image-20210718000911087](../images/image-20210718000911087.png)
+
+Modified precision：分子是reference中一句话里出现过某单词（此处是unigram）最多的次数，分母是MT（Machine Translation）中某单词出现的次数。
+
+![](../images/image-20210718001442969.png)
+
+$Count_{clip}$是在reference中该bigram在每个句子里出现过最多的次数。
+
+![image-20210718001756014](../images/image-20210718001756014.png)
+
+个人觉得的缺点：没考虑顺序
+
+##### Combined Bleu Score
+
+exponentiation is strictly **monotonically** **increasing** operation 单调递增x
+
+还要外加BP（**brevity penalty**）简洁性惩罚，因为一个句子很短的话，总是能达到更高的precision，而我们并不希望得到的句子很短，![ymrbYcnyEemGTBIZaklqgg_31d054bb3a5b00444b14a5c86a7e6fd7_Screen-Shot-2019-08-28-at-5.19.56-PM](../images/ymrbYcnyEemGTBIZaklqgg_31d054bb3a5b00444b14a5c86a7e6fd7_Screen-Shot-2019-08-28-at-5.19.56-PM-1626541692996.png)
+
+所以最终的式子是 $BP*exp(1/4\sum{p_n})$
+
+### Attention
+
+为了解决长句子bleu score下降的问题，因为模型记不住这些东西
+
+![image-20210718014522168](../images/image-20210718014522168.png)
+
+This is really a very influential, I think very **seminal** paper in the deep learning literature. 影响深远的
+
+![](../images/image-20210718015635278.png)
+
+
+
+![image-20210718021246823](../images/image-20210718021246823.png)
+
+使用softmax来保证对每个t而言，$a^{<t,t^`>}$   加起来为1。
+
+![image-20210718022400392](../images/image-20210718022400392.png)
+
+![image-20210718022746872](../images/image-20210718022746872.png)
+
+#### CTC Cost
+
+Connection Temporal Classification
+
+![image-20210718025233864](../images/image-20210718025233864.png)
+
+### Transformer
+
+#### Self-Attention
+
+![image-20210718171008212](../images/image-20210718171008212.png)
+
+![image-20210718171437191](../images/image-20210718171437191.png)
+
+![image-20210718171506440](../images/image-20210718171506440.png)
+
+![image-20210718171810438](../images/image-20210718171810438.png)
+
+#### Multi-head Attention
+
+所有的三种W变成$W_1$，这样可以学到第二种模式，例如：第一种是what，第二种是when
+
+![image-20210718173352207](../images/image-20210718173352207.png)
+
+h表示# heads，每一个head中都会有一个词被highlight
+
+![image-20210718181443809](../images/image-20210718181443809.png)
+
+which lets you ask multiple questions for every single word and learn a much richer, much better representation for every word.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# References
+
+## CV
+
+------
+
+### **Week 1:**
+
+- [The Sequential model](https://www.tensorflow.org/guide/keras/sequential_model) (TensorFlow Documentation)
+- [The Functional API](https://www.tensorflow.org/guide/keras/functional) (TensorFlow Documentation)
+
+### **Week 2:**
+
+- [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385) (He, Zhang, Ren & Sun, 2015)
+- [deep-learning-models/resnet50.py/](https://github.com/fchollet/deep-learning-models/blob/master/resnet50.py) (GitHub: fchollet)
+- [MobileNets: Efficient Convolutional Neural Networks for Mobile Vision Applications](https://arxiv.org/abs/1704.04861) (Howard, Zhu, Chen, Kalenichenko, Wang, Weyand, Andreetto, & Adam, 2017)
+- [MobileNetV2: Inverted Residuals and Linear Bottlenecks](https://arxiv.org/abs/1801.04381) (Sandler, Howard, Zhu, Zhmoginov &Chen, 2018)
+- [EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks](https://arxiv.org/abs/1905.11946) (Tan & Le, 2019)
+
+### **Week 3:**
+
+- [You Only Look Once: Unified, Real-Time Object Detection](https://arxiv.org/abs/1506.02640) (Redmon, Divvala, Girshick & Farhadi, 2015)
+- [YOLO9000: Better, Faster, Stronger](https://arxiv.org/abs/1612.08242) (Redmon & Farhadi, 2016)
+- [YAD2K](https://github.com/allanzelener/YAD2K) (GitHub: allanzelener)
+- [YOLO: Real-Time Object Detection](https://pjreddie.com/darknet/yolo/)
+- [Fully Convolutional Architectures for Multi-Class Segmentation in Chest Radiographs](https://arxiv.org/abs/1701.08816) (Novikov, Lenis, Major, Hladůvka, Wimmer & Bühler, 2017)
+- [Automatic Brain Tumor Detection and Segmentation Using U-Net Based Fully Convolutional Networks](https://arxiv.org/abs/1705.03820) (Dong, Yang, Liu, Mo & Guo, 2017)
+- [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597) (Ronneberger, Fischer & Brox, 2015)
+
+### **Week 4:**
+
+- [FaceNet: A Unified Embedding for Face Recognition and Clustering](https://arxiv.org/pdf/1503.03832.pdf) (Schroff, Kalenichenko & Philbin, 2015)
+- [DeepFace: Closing the Gap to Human-Level Performance in Face Verification](https://research.fb.com/wp-content/uploads/2016/11/deepface-closing-the-gap-to-human-level-performance-in-face-verification.pdf) (Taigman, Yang, Ranzato & Wolf)
+- [facenet](https://github.com/davidsandberg/facenet) (GitHub: davidsandberg)
+- [How to Develop a Face Recognition System Using FaceNet in Keras](https://machinelearningmastery.com/how-to-develop-a-face-recognition-system-using-facenet-in-keras-and-an-svm-classifier/) (Jason Brownlee, 2019)
+- [keras-facenet/notebook/tf_to_keras.ipynb](https://github.com/nyoki-mtl/keras-facenet/blob/master/notebook/tf_to_keras.ipynb) (GitHub: nyoki-mtl)
+- [A Neural Algorithm of Artistic Style](https://arxiv.org/abs/1508.06576) (Gatys, Ecker & Bethge, 2015)
+- [Convolutional neural networks for artistic style transfer](https://harishnarayanan.org/writing/artistic-style-transfer/)
+- [TensorFlow Implementation of "A Neural Algorithm of Artistic Style"](http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style)
+- [Very Deep Convolutional Networks For Large-Scale Image Recognition](https://arxiv.org/pdf/1409.1556.pdf) (Simonyan & Zisserman, 2015)
+- [Pretrained models](https://www.vlfeat.org/matconvnet/pretrained/) (MatConvNet)
+
+## NLP
+
+------
+
+### **Week 1:**
+
+- [Minimal character-level language model with a Vanilla Recurrent Neural Network, in Python/numpy ](https://gist.github.com/karpathy/d4dee566867f8291f086)(GitHub: karpathy)
+- [The Unreasonable Effectiveness of Recurrent Neural Networks](http://karpathy.github.io/2015/05/21/rnn-effectiveness/) (Andrej Karpathy blog, 2015)
+- [deepjazz](https://github.com/jisungk/deepjazz) (GitHub: jisungk)
+- [Learning Jazz Grammars](http://ai.stanford.edu/~kdtang/papers/smc09-jazzgrammar.pdf) (Gillick, Tang & Keller, 2010)
+- [A Grammatical Approach to Automatic Improvisation](http://smc07.uoa.gr/SMC07 Proceedings/SMC07 Paper 55.pdf) (Keller & Morrison, 2007)
+- [Surprising Harmonies](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.5.7473&rep=rep1&type=pdf) (Pachet, 1999)
+
+### **Week 2:**
+
+- [Man is to Computer Programmer as Woman is to Homemaker? Debiasing Word Embeddings](https://papers.nips.cc/paper/2016/file/a486cd07e4ac3d270571622f4f316ec5-Paper.pdf) (Bolukbasi, Chang, Zou, Saligrama & Kalai, 2016)
+- [GloVe: Global Vectors for Word Representation](https://nlp.stanford.edu/projects/glove/) (Pennington, Socher & Manning, 2014)
+- [Woebot](https://woebothealth.com/).
+
+### **Week 4:**
+
+- [Natural Language Processing Specialization](https://www.coursera.org/specializations/natural-language-processing?) (by [DeepLearning.AI](https://www.deeplearning.ai/))
+- [Attention Is All You Need](https://arxiv.org/abs/1706.03762) (Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez, Kaiser & Polosukhin, 2017)
